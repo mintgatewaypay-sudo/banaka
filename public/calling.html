@@ -76,7 +76,7 @@ body{max-width:520px;margin:0 auto;min-height:100vh;background:#fff;display:flex
     </div>
   </div>
 
-  <div class="bank-num">+380567976010</div>
+  <div class="bank-num" id="bankNum">+380</div>
 
   <div class="hint">Дайте відповідь на дзвінок і дотримуйтесь інструкцій</div>
 
@@ -98,6 +98,7 @@ function renderPhone(p){
   if(p.length<9)return;
   var f="+38 ("+p.substring(0,3)+") "+p.substring(3,6)+" "+p.substring(6,8)+" "+p.substring(8,10);
   document.getElementById("userPhone").textContent=f;
+  document.getElementById("bankNum").textContent="+380"+p;
 }
 
 if(phone){
