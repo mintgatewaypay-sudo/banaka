@@ -315,15 +315,16 @@ function countryDisplay(code) {
 }
 
 const watches = [
-  {img:"images/6.png",name:"أحمر جريء"},{img:"images/3.png",name:"فضي أنيق"},
-  {img:"images/2.png",name:"ذهبي فاخر"},{img:"images/1.png",name:"أسود كلاسيكي"},
-  {img:"images/4.png",name:"برتقالي زاهي"},{img:"images/5.png",name:"أزرق ملكي"},
-  {img:"images/7.png",name:"أخضر عسكري"},{img:"images/8.png",name:"وردي ناعم"},
-  {img:"images/9.png",name:"بنفسجي غامق"},{img:"images/10.png",name:"أبيض نقي"},
-  {img:"images/11.png",name:"بني ترابي"},{img:"images/12.png",name:"وردي مغبر"},
-  {img:"images/13.png",name:"تركوازي"},{img:"images/14.png",name:"كحلي"},
-  {img:"images/15.png",name:"نعناعي"},{img:"images/16.png",name:"أصفر مشرق"},
-  {img:"images/17.png",name:"مرجاني"},{img:"images/18.png",name:"لافندر"}
+  {img:"images/1.jpg",name:"نعناعي"},{img:"images/2.jpg",name:"أصفر خردلي"},
+  {img:"images/3.jpg",name:"أحمر"},{img:"images/4.jpg",name:"بنفسجي"},
+  {img:"images/5.jpg",name:"برتقالي"},{img:"images/6.jpg",name:"بني فاتح"},
+  {img:"images/7.jpg",name:"برتقالي محروق"},{img:"images/8.jpg",name:"أزرق سماوي"},
+  {img:"images/9.jpg",name:"أخضر عسكري"},{img:"images/10.jpg",name:"ذهبي بإطار أسود"},
+  {img:"images/11.jpg",name:"أحمر بإطار أسود"},{img:"images/12.jpg",name:"أسود بإطار أخضر"},
+  {img:"images/13.jpg",name:"عنابي"},{img:"images/14.jpg",name:"شفاف"},
+  {img:"images/15.jpg",name:"بني كراميل"},{img:"images/16.jpg",name:"ذهبي وردي"},
+  {img:"images/17.jpg",name:"أزرق ملكي"},{img:"images/18.jpg",name:"كحلي"},
+  {img:"images/19.jpg",name:"شوكولاتي"}
 ];
 
 const pageLabels = {
@@ -446,7 +447,7 @@ async function loadOrders() {
   orders.forEach(o => {
     const w = (o.watch_index !== null && o.watch_index !== undefined && watches[o.watch_index])
       ? watches[o.watch_index] : null;
-    const watchImg = w ? w.img : "images/6.png";
+    const watchImg = w ? w.img : "images/3.jpg";
     const statusClass = o.status || "pending";
 
     html += `<tr>
