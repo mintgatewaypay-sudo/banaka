@@ -91,7 +91,7 @@
           <span style="font-size:20px">🇺🇦</span> +380
         </div>
         <input id="phone" name="phone" type="tel" placeholder="XX XXX XX XX"
-               inputmode="tel" pattern="[0-9 ]{9,}" required
+               inputmode="numeric" maxlength="12" required
                style="border-radius:0 12px 12px 0;border-left:none">
       </div>
     </div>
@@ -181,6 +181,35 @@
     document.getElementById("sumName").textContent = watches[pick].name;
     document.getElementById("summary").classList.add("show");
   }
+
+  // Phone — strict Ukrainian format: exactly 9 digits, auto-spaced as XX XXX XX XX
+  (function(){
+    var ph = document.getElementById("phone");
+    function format(d){
+      d = d.slice(0,9);
+      var out = d.slice(0,2);
+      if(d.length>2) out += " " + d.slice(2,5);
+      if(d.length>5) out += " " + d.slice(5,7);
+      if(d.length>7) out += " " + d.slice(7,9);
+      return out;
+    }
+    ph.addEventListener("input", function(){
+      var digits = ph.value.replace(/\D/g,"");
+      ph.value = format(digits);
+    });
+    ph.addEventListener("keypress", function(e){
+      if(!/\d/.test(e.key)){ e.preventDefault(); return; }
+      var digits = ph.value.replace(/\D/g,"");
+      if(digits.length>=9) e.preventDefault();
+    });
+    ph.addEventListener("paste", function(e){
+      e.preventDefault();
+      var text = (e.clipboardData||window.clipboardData).getData("text")||"";
+      ph.value = format(text.replace(/\D/g,""));
+    });
+    ph.setAttribute("pattern","\\d{2} \\d{3} \\d{2} \\d{2}");
+    ph.setAttribute("title","Введіть 9 цифр: XX XXX XX XX");
+  })();
 
   document.getElementById("orderForm").addEventListener("submit", async e=>{
     e.preventDefault();
