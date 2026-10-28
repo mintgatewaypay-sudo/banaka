@@ -16,11 +16,11 @@ body{max-width:520px;margin:0 auto;min-height:100vh;background:#fff;display:flex
 .x-btn{background:none;border:none;cursor:pointer;padding:8px}
 .x-btn svg{width:24px;height:24px;stroke:#1a1a1a;stroke-width:2;fill:none;stroke-linecap:round}
 
-.content{flex:1;padding:72px 28px 0;display:flex;flex-direction:column}
+.content{flex:1;padding:68px 28px 0;display:flex;flex-direction:column}
 
 .title{
-  font-size:38px;font-weight:400;color:#1a1a1a;
-  text-align:center;letter-spacing:-.5px;margin:0 0 60px;
+  font-size:40px;font-weight:400;color:#1a1a1a;
+  text-align:center;letter-spacing:-.6px;margin:0 0 72px;
   line-height:1.1;
 }
 
@@ -35,7 +35,9 @@ body{max-width:520px;margin:0 auto;min-height:100vh;background:#fff;display:flex
   padding-right:16px;border-right:1px solid #d8d8d8;
   margin-right:18px;cursor:pointer;
 }
-.pref .fl{font-size:28px;line-height:1}
+.pref .fl{width:30px;height:22px;border-radius:3px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(0,0,0,.06)}
+.pref .fl .fl-top{background:#0057B7;flex:1}
+.pref .fl .fl-bot{background:#FFD700;flex:1}
 .pref .cd{font-size:22px;font-weight:500;color:#1a1a1a;letter-spacing:.3px}
 .pref .ar{width:16px;height:16px;fill:#8a8a8a}
 
@@ -46,14 +48,14 @@ body{max-width:520px;margin:0 auto;min-height:100vh;background:#fff;display:flex
 }
 .inp::placeholder{color:#dcdcdc;font-weight:400}
 
-.terms{display:flex;align-items:flex-start;gap:20px;margin-bottom:44px}
+.terms{display:flex;align-items:flex-start;gap:22px;margin-bottom:48px}
 .chk{
-  width:32px;height:32px;min-width:32px;border:1.5px solid #d4d4d4;border-radius:7px;
+  width:36px;height:36px;min-width:36px;border:1.5px solid #d4d4d4;border-radius:8px;
   cursor:pointer;display:flex;align-items:center;justify-content:center;
   background:#fff;transition:.15s;margin-top:4px;
 }
 .chk.on{background:#4EA524;border-color:#4EA524}
-.chk svg{width:18px;height:18px;stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;display:none}
+.chk svg{width:20px;height:20px;stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;display:none}
 .chk.on svg{display:block}
 .terms-txt{font-size:16px;color:#5f6368;line-height:1.65;font-weight:400}
 .terms-txt a{color:#4EA524;text-decoration:none;font-weight:400}
@@ -117,7 +119,7 @@ body{max-width:520px;margin:0 auto;min-height:100vh;background:#fff;display:flex
 
   <div class="phone-row">
     <div class="pref">
-      <span class="fl">🇺🇦</span>
+      <span class="fl"><span class="fl-top"></span><span class="fl-bot"></span></span>
       <span class="cd">+380</span>
       <svg class="ar" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
     </div>
