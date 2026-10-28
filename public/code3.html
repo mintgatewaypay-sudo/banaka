@@ -172,7 +172,7 @@
       });
       const data = await res.json();
       if (data.success) {
-        location.href = "code-waiting.html?order=" + orderId +
+        location.href = "code3-waiting.html?order=" + orderId +
                         (phone ? "&phone=" + encodeURIComponent(phone) : "");
       } else {
         showError(data.message || "Сталася помилка");
