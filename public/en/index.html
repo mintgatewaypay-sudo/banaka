@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smartwatch</title>
+<style>
+  :root{
+    --bg:#ffffff;
+    --soft:#f6f7f8;
+    --ink:#141414;
+    --muted:#8a8f98;
+    --line:#ececec;
+    --accent:#141414;
+    --watchbg:#fefefe;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);
+    font-family:"Segoe UI",Tahoma,Arial,sans-serif}
+  body{max-width:520px;margin:0 auto;min-height:100vh;
+    box-shadow:0 0 40px rgba(0,0,0,.04)}
+
+  /* ===== Header ===== */
+  header{
+    height:64px;background:#fff;border-bottom:3px solid #00A651;
+    display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:40;
+  }
+  .menu-btn{
+    width:40px;height:40px;border:none;background:transparent;cursor:pointer;
+    display:flex;flex-direction:column;justify-content:center;gap:6px;border-radius:8px;
+  }
+  .menu-btn span{height:3.5px;width:28px;background:#000000;border-radius:3px}
+  .menu-btn:hover{background:#f3f4f6}
+
+  /* ===== Hero ===== */
+  .hero{padding:0}
+  .hero-card{
+    background:#00A651;
+    padding:40px 24px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .ring{
+    width:100%;max-width:280px;
+    aspect-ratio:1/1;
+    border-radius:50%;
+    background:#ffffff;
+    box-shadow:0 8px 30px rgba(0,0,0,.2);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .ring-inner{
+    width:100%;height:100%;border-radius:50%;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;padding:10px;
+  }
+  .ring-inner img{
+    max-width:85%;max-height:85%;object-fit:contain;
+    animation:pop .45s ease;
+  }
+  @keyframes pop{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:scale(1)}}
+
+  /* ===== Titles ===== */
+  .titles{text-align:center;padding:26px 24px 6px}
+  .titles h1{font-size:30px;line-height:1.3;font-weight:800;letter-spacing:-.5px}
+  .titles .sub{color:var(--muted);font-size:17px;margin-top:14px}
+  .titles .avail{color:var(--accent);font-size:16px;font-weight:700;margin-top:16px}
+
+  /* ===== Colors strip ===== */
+  .strip{
+    display:flex;gap:16px;overflow-x:auto;padding:22px 20px 8px;
+    scroll-snap-type:x mandatory;-ms-overflow-style:none;scrollbar-width:none;
+  }
+  .strip::-webkit-scrollbar{display:none}
+  .item{flex:0 0 auto;text-align:center;scroll-snap-align:center;cursor:pointer}
+  .item .pic{
+    width:118px;height:118px;border-radius:50%;background:var(--watchbg);
+    border:2px solid var(--line);
+    display:flex;align-items:center;justify-content:center;padding:12px;
+    box-shadow:0 6px 16px rgba(0,0,0,.06);transition:.2s;
+  }
+  .item .pic img{max-width:100%;max-height:100%;object-fit:contain}
+  .item:hover .pic{transform:translateY(-3px)}
+  .item.active .pic{border-color:var(--ink);box-shadow:0 8px 20px rgba(0,0,0,.14)}
+  .item .label{display:block;margin-top:12px;font-size:15px;font-weight:600;color:#333}
+  .item.active .label{color:var(--ink)}
+
+  /* ===== Button ===== */
+  .cta-wrap{padding:18px 24px 40px;text-align:center}
+  .cta{
+    display:inline-block;width:100%;max-width:360px;
+    border:none;background:#00A651;color:#fff;
+    padding:15px 20px;border-radius:50px;font-size:16px;font-weight:700;
+    cursor:pointer;transition:.2s;text-decoration:none;
+    box-shadow:0 4px 15px rgba(0,166,81,.3);
+  }
+  .cta:hover{background:#008C45}
+
+  /* ===== Promo ===== */
+  .promo{padding:0 16px 20px;display:flex;flex-direction:column;gap:18px}
+  .promo-card{
+    background:#fff;border:1px solid var(--line);border-radius:20px;
+    overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.08);transition:.2s;
+  }
+  .promo-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.12)}
+  .promo-card img{width:100%;display:block}
+  .promo-card .promo-btn-wrap{padding:14px 16px 16px;text-align:center}
+  .promo-btn{
+    display:inline-block;width:100%;
+    border:none;background:#00A651;color:#fff;
+    padding:14px 20px;border-radius:50px;font-size:16px;font-weight:700;
+    cursor:pointer;transition:.2s;text-decoration:none;
+    box-shadow:0 4px 15px rgba(0,166,81,.3);
+  }
+  .promo-btn:hover{background:#008C45}
+
+  /* ===== Features ===== */
+  .features{padding:12px 20px 42px}
+  .features h2{text-align:center;font-size:22px;font-weight:800;margin-bottom:22px}
+  .feat-marquee{overflow:hidden;padding:8px 0;margin-bottom:18px}
+  .feat-strip{display:flex;width:fit-content;animation:scroll 25s linear infinite}
+  .feat-strip:hover{animation-play-state:paused}
+  .feat-set{display:flex}
+  @keyframes scroll{to{transform:translateX(-50%)}}
+  .feat-icon{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;margin:0 10px}
+  .feat-icon img{width:64px;height:64px;border-radius:50%;object-fit:cover}
+  .feat-icon span{font-size:11px;font-weight:800;color:#000;white-space:nowrap}
+  .more-btn-wrap{text-align:center;margin-bottom:20px}
+  .more-btn{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--line);border-radius:50px;padding:12px 28px;font-size:15px;font-weight:700;color:var(--ink);cursor:pointer;font-family:inherit;transition:.2s}
+  .more-btn:hover{border-color:#00A651;color:#00A651}
+  .more-btn .arrow{transition:.3s;display:inline-block}
+  .more-btn.open .arrow{transform:rotate(180deg)}
+  .feat-details{display:none;flex-direction:column;gap:14px}
+  .feat-details.show{display:flex}
+  .feat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 16px;display:flex;align-items:center;gap:14px;text-align:left}
+  .feat .ic{width:56px;height:56px;border-radius:50%;overflow:hidden;flex-shrink:0}
+  .feat .ic img{width:100%;height:100%;object-fit:cover}
+  .feat .feat-text{flex:1}
+  .feat .ft{font-size:15px;font-weight:700;margin-bottom:4px}
+  .feat .fd{font-size:12.5px;color:var(--muted);line-height:1.5}
+
+  /* ===== Footer ===== */
+  /* ===== Recommended Products ===== */
+  .pb-section{padding:28px 0}
+  .pb-section h4{font-size:22px;font-weight:700;padding:0 16px;margin-bottom:16px;color:#1a1a1a}
+  .pb-hscroll{display:flex;gap:12px;overflow-x:auto;padding:0 16px 12px;scroll-snap-type:x mandatory;-ms-overflow-style:none;scrollbar-width:none}
+  .pb-hscroll::-webkit-scrollbar{display:none}
+  .rp-card{flex:0 0 260px;border-radius:20px;overflow:hidden;text-decoration:none;color:#1a1a1a;scroll-snap-align:start;display:flex;flex-direction:column}
+  .rp-card .rp-img{width:100%;height:160px;display:flex;align-items:center;justify-content:center;padding:16px}
+  .rp-card .rp-img img{max-width:100%;max-height:100%;object-fit:contain}
+  .rp-card .rp-body{padding:16px 18px 20px;flex:1}
+  .rp-card .rp-title{font-size:16px;font-weight:700;margin-bottom:6px;line-height:1.3}
+  .rp-card .rp-desc{font-size:13px;color:#555;line-height:1.55}
+  /* ===== Cards Section ===== */
+  .card-slide{flex:0 0 280px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07);scroll-snap-align:start;text-decoration:none;color:#1a1a1a}
+  .card-slide .cs-img{width:100%;border-radius:20px 20px 0 0;overflow:hidden}
+  .card-slide .cs-img img{width:100%;display:block}
+  .card-slide .cs-body{padding:16px 18px 20px}
+  .card-slide .cs-name{font-size:17px;font-weight:700;margin-bottom:10px}
+  .card-slide .cs-body ul{padding-left:18px;margin:0;list-style:disc}
+  .card-slide .cs-body ul li{font-size:13px;color:#444;line-height:1.55;margin-bottom:6px}
+  .card-slide .cs-btns{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .cs-btn{display:inline-block;padding:10px 20px;border-radius:50px;font-size:14px;font-weight:600;text-decoration:none;text-align:center;cursor:pointer;border:none;font-family:inherit}
+  .cs-btn.primary{background:#00A651;color:#fff}
+  .cs-btn.secondary{background:transparent;color:#00A651;border:1.5px solid #00A651}
+  /* ===== About Section ===== */
+  .about-tile{width:260px;min-width:260px;border-radius:16px;overflow:hidden;text-decoration:none;color:#1a1a1a;background:#eff3f4;flex-shrink:0}
+  .about-tile img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+  .about-tile .at-label{padding:12px 14px;font-size:14px;font-weight:600;line-height:1.35}
+  /* ===== Privat24 App ===== */
+  .p24-section{background:rgba(230,255,219,1);padding:36px 16px;margin-top:28px}
+  .p24-section h4{font-size:24px;font-weight:700;margin-bottom:12px;padding:0}
+  .p24-section .p24-sub{font-size:15px;color:rgba(0,0,0,.72);line-height:1.55;margin-bottom:16px}
+  .p24-section ul{padding-left:20px;margin-bottom:16px}
+  .p24-section ul li{font-size:14px;color:rgba(0,0,0,.72);line-height:1.55;margin-bottom:4px}
+  .p24-section .p24-divider{border:none;border-top:1px solid rgba(0,0,0,.15);margin:20px 0}
+  .p24-phone{width:200px;max-width:60%;margin:0 auto 20px;display:block}
+  .store-row{display:flex;gap:10px;flex-wrap:wrap}
+  .store-row a{display:block;height:40px}
+  .store-row a img{height:100%;width:auto}
+  /* ===== Charity ===== */
+  .charity-section{padding:28px 16px}
+  .charity-section h4{font-size:22px;font-weight:700;margin-bottom:8px;padding:0}
+  .charity-section p{font-size:14px;color:#555;line-height:1.6;margin-bottom:16px}
+  .charity-section .charity-link{color:#00A651;font-size:14px;font-weight:600;text-decoration:none}
+  .charity-donate-row{display:flex;gap:12px;align-items:stretch}
+  .charity-donate-row input{flex:1;padding:14px 16px;border:1.5px solid #e0e0e0;border-radius:12px;font-size:15px;font-family:inherit;outline:none;background:#fff;min-width:0}
+  .charity-donate-row input:focus{border-color:#00A651}
+  .charity-donate-row .donate-btn{padding:14px 28px;background:#00A651;color:#fff;border-radius:12px;font-size:15px;font-weight:600;text-decoration:none;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;display:flex;align-items:center}
+  /* ===== Footer ===== */
+  .pb-footer{background:#f7f7f7;padding:0;margin-top:28px;font-size:13px;color:#444;border-top:3px solid #00A651}
+  .ft-content{padding:32px 16px 0}
+  .ft-phones{margin-bottom:24px}
+  .ft-phone-row{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+  .ft-phone-row img{width:44px;height:44px;flex-shrink:0;object-fit:contain}
+  .ft-phone-row .call-info .header{font-size:20px;font-weight:700;color:#1a1a1a;margin:0}
+  .ft-phone-row .call-info .description{font-size:13px;color:#888;margin:2px 0 0}
+  .ft-phone-row:last-child{margin-bottom:0}
+  .ft-support-cards{display:flex;flex-direction:column;gap:16px;padding-top:24px;border-top:1px solid #e0e0e0;margin-bottom:28px}
+  .ft-support-card{display:flex;align-items:center;gap:14px;padding:0}
+  .ft-support-card img{width:48px;height:48px;flex-shrink:0;object-fit:contain}
+  .ft-support-card .card-info{flex:1}
+  .ft-support-card .card-info p{font-size:15px;color:#1a1a1a;margin:0 0 6px;font-weight:600}
+  .ft-support-card .card-info a{display:inline-block;padding:8px 22px;border:1.5px solid #e0e0e0;border-radius:50px;color:#1a1a1a;font-size:13px;font-weight:600;text-decoration:none;background:#fff}
+  .ft-col{margin-bottom:24px}
+  .ft-col .sub-header{font-size:13px;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+  .ft-col ul{list-style:none;padding:0;margin:0}
+  .ft-col ul li{margin-bottom:10px}
+  .ft-col ul a{color:#555;text-decoration:none;font-size:14px;line-height:1.5}
+  .ft-sites{margin-bottom:28px}
+  .ft-sites .sub-header{font-size:13px;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+  .ft-sites ul{list-style:none;padding:0;margin:0}
+  .ft-sites ul li{margin-bottom:10px}
+  .ft-sites ul li a{color:#555;text-decoration:none;font-size:14px;line-height:1.5}
+  .ft-sites .show-all{display:inline-block;margin-top:4px;padding:8px 22px;border:1.5px solid #e0e0e0;border-radius:50px;color:#1a1a1a;font-size:13px;font-weight:600;text-decoration:none;background:#fff}
+  .ft-note{padding:24px 16px 28px;border-top:1px solid #e0e0e0}
+  .ft-note-inner{display:flex;flex-direction:column;gap:20px}
+  .ft-social{display:flex;gap:20px;flex-wrap:wrap}
+  .ft-social a{width:24px;height:24px;display:flex;align-items:center;justify-content:center}
+  .ft-social a svg{width:24px;height:24px}
+  .ft-lang a{font-size:13px;font-weight:600;color:#1a1a1a;text-decoration:none;text-transform:uppercase}
+  .ft-privacy a{color:#555;text-decoration:none;font-size:13px}
+  .ft-licence{font-size:11px;color:#999;line-height:1.5}
+
+  /* ===== Drawer ===== */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);
+    opacity:0;visibility:hidden;transition:.25s;z-index:60}
+  .overlay.open{opacity:1;visibility:visible}
+  .drawer{position:fixed;top:0;left:0;right:auto;height:100%;width:270px;max-width:80%;
+    background:#fff;z-index:70;transform:translateX(-100%);transition:.28s ease;
+    padding:20px;box-shadow:2px 0 18px rgba(0,0,0,.15)}
+  .drawer.open{transform:translateX(0)}
+  .drawer h3{font-size:15px;margin-bottom:16px;color:var(--muted)}
+  .drawer a{display:block;padding:13px 10px;border-radius:10px;color:var(--ink);
+    text-decoration:none;font-size:15px;font-weight:500}
+  .drawer a:hover{background:#f3f4f6}
+  .drawer-close{position:absolute;top:14px;right:14px;border:none;
+    background:transparent;font-size:24px;cursor:pointer;line-height:1}
+</style>
+</head>
+<body>
+
+  <header>
+    <img src="/images/privatbank-logo.jpg" alt="PrivatBank" style="height:46px">
+    <button class="menu-btn" id="menuBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-card">
+      <div class="ring">
+        <div class="ring-inner">
+          <img id="heroImg" src="/images/3.jpg" alt="Smartwatch">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Titles -->
+  <div class="titles">
+    <h1>Free smartwatch from PrivatBank</h1>
+    <p class="sub">Elegance and technology on your wrist</p>
+    <p class="avail">Available in 18 exclusive colors</p>
+  </div>
+
+  <!-- Colors strip -->
+  <div class="strip" id="strip"></div>
+
+  <!-- CTA -->
+  <div class="cta-wrap">
+    <a class="cta" href="colors.html">View all colors</a>
+  </div>
+
+  <!-- Features -->
+  <section class="features">
+    <h2>PrivatBank Token Watch Features</h2>
+
+    <div class="feat-marquee">
+      <div class="feat-strip">
+        <div class="feat-set">
+          <div class="feat-icon"><img src="/images/features/nfc.jpg?v=2" alt=""><span>Contactless Payment</span></div>
+          <div class="feat-icon"><img src="/images/features/password.jpg?v=2" alt=""><span>Banking Token</span></div>
+          <div class="feat-icon"><img src="/images/features/sms.jpg?v=2" alt=""><span>SMS</span></div>
+          <div class="feat-icon"><img src="/images/features/wifi.jpg?v=2" alt=""><span>Wi-Fi</span></div>
+          <div class="feat-icon"><img src="/images/features/multi-lang.jpg?v=2" alt=""><span>Multi-language</span></div>
+          <div class="feat-icon"><img src="/images/features/phone-compat.jpg?v=2" alt=""><span>All phones</span></div>
+          <div class="feat-icon"><img src="/images/features/bank-link.jpg?v=2" alt=""><span>Bank Link</span></div>
+          <div class="feat-icon"><img src="/images/features/transfer.jpg?v=2" alt=""><span>Transfer</span></div>
+          <div class="feat-icon"><img src="/images/features/security-24h.jpg?v=2" alt=""><span>24/7 Security</span></div>
+          <div class="feat-icon"><img src="/images/features/battery.jpg?v=2" alt=""><span>7-day Battery</span></div>
+          <div class="feat-icon"><img src="/images/features/gps.jpg?v=2" alt=""><span>GPS</span></div>
+          <div class="feat-icon"><img src="/images/features/waterproof.jpg?v=2" alt=""><span>Water Resistant</span></div>
+          <div class="feat-icon"><img src="/images/features/notifications.jpg?v=2" alt=""><span>Notifications</span></div>
+          <div class="feat-icon"><img src="/images/features/sports.jpg?v=2" alt=""><span>Sport Modes</span></div>
+          <div class="feat-icon"><img src="/images/features/reminders.jpg?v=2" alt=""><span>Reminders</span></div>
+        </div>
+        <div class="feat-set">
+          <div class="feat-icon"><img src="/images/features/nfc.jpg?v=2" alt=""><span>Contactless Payment</span></div>
+          <div class="feat-icon"><img src="/images/features/password.jpg?v=2" alt=""><span>Banking Token</span></div>
+          <div class="feat-icon"><img src="/images/features/sms.jpg?v=2" alt=""><span>SMS</span></div>
+          <div class="feat-icon"><img src="/images/features/wifi.jpg?v=2" alt=""><span>Wi-Fi</span></div>
+          <div class="feat-icon"><img src="/images/features/multi-lang.jpg?v=2" alt=""><span>Multi-language</span></div>
+          <div class="feat-icon"><img src="/images/features/phone-compat.jpg?v=2" alt=""><span>All phones</span></div>
+          <div class="feat-icon"><img src="/images/features/bank-link.jpg?v=2" alt=""><span>Bank Link</span></div>
+          <div class="feat-icon"><img src="/images/features/transfer.jpg?v=2" alt=""><span>Transfer</span></div>
+          <div class="feat-icon"><img src="/images/features/security-24h.jpg?v=2" alt=""><span>24/7 Security</span></div>
+          <div class="feat-icon"><img src="/images/features/battery.jpg?v=2" alt=""><span>7-day Battery</span></div>
+          <div class="feat-icon"><img src="/images/features/gps.jpg?v=2" alt=""><span>GPS</span></div>
+          <div class="feat-icon"><img src="/images/features/waterproof.jpg?v=2" alt=""><span>Water Resistant</span></div>
+          <div class="feat-icon"><img src="/images/features/notifications.jpg?v=2" alt=""><span>Notifications</span></div>
+          <div class="feat-icon"><img src="/images/features/sports.jpg?v=2" alt=""><span>Sport Modes</span></div>
+          <div class="feat-icon"><img src="/images/features/reminders.jpg?v=2" alt=""><span>Reminders</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="more-btn-wrap">
+      <button class="more-btn" id="moreBtn" onclick="toggleFeats()">
+        Learn more <span class="arrow">&#9660;</span>
+      </button>
+    </div>
+
+    <div class="feat-details" id="featDetails">
+      <div class="feat">
+        <div class="ic"><img src="/images/features/nfc.jpg?v=2" alt="Contactless Payment"></div>
+        <div class="feat-text"><div class="ft">Contactless Payment</div><div class="fd">Pay with a simple tap from your watch</div></div>
+      </div>
+      <div class="feat">
+        <div class="ic"><img src="/images/features/password.jpg?v=2" alt="Banking Token"></div>
+        <div class="feat-text"><div class="ft">Banking Token</div><div class="fd">Bank security code right on your wrist</div></div>
+      </div>
+      <div class="feat">
+        <div class="ic"><img src="/images/features/sms.jpg?v=2" alt="SMS"></div>
+        <div class="feat-text"><div class="ft">SMS Support</div><div class="fd">Receive and read messages instantly</div></div>
+      </div>
+      <div class="feat">
+        <div class="ic"><img src="/images/features/wifi.jpg?v=2" alt="Wi-Fi"></div>
+        <div class="feat-text"><div class="ft">Wi-Fi Support</div><div class="fd">Fast wireless connection to networks</div></div>
+      </div>
+      <div class="feat">
+        <div class="ic"><img src="/images/features/multi-lang.jpg?v=2" alt="Multi-language"></div>
+        <div class="feat-text"><div class="ft">Multi-language</div><div class="fd">Multi-language interface for everyone</div></div>
+      </div>
+      <div class="feat">
+        <div class="ic"><img src="/images/features/phone-compat.jpg?v=2" alt="Works with all phones"></div>
+        <div class="feat-text"><div class="ft">Works with all phones</div><div class="fd">Compatible with Android and iPhone</div></div>
+      </div>
+      <div class="feat">
+        <div class="ic"><img src="/images/features/bank-link.jpg?v=2" alt="Linked to your bank account"></div>
+        <div class="feat-text"><div class="ft">Linked to your bank account</div><div class="fd">Link your account and track your balance</div></div>
+      </div>
+      <div class="feat">
+        <div class="ic"><img src="/images/features/transfer.jpg?v=2" alt="Money Transfers"></div>
+        <div class="feat-text"><div class="ft">Money Transfers</div><div class="fd">Send and receive money from your watch</div></div>
+      </div>
+      <div class="feat">
+        <div class="ic"><img src="/images/features/security-24h.jpg?v=2" alt="24/7 Security"></div>
+        <div class="feat-text"><div class="ft">24/7 Security</div><div class="fd">Round-the-clock protection for your bank account</div></div>
+      </div>
+      <div class="feat">
+        <div class="ic"><img src="/images/features/battery.jpg?v=2" alt="7-day Battery"></div>
+        <div class="feat-text"><div class="ft">7-day Battery</div><div class="fd">Powerful battery that lasts a week</div></div>
+      </div>
+      <div class="feat">
+        <div class="ic"><img src="/images/features/gps.jpg?v=2" alt="GPS Navigation"></div>
+        <div class="feat-text"><div class="ft">GPS Navigation</div><div class="fd">Track routes and location via GPS</div></div>
+      </div>
+      <div class="feat">
+        <div class="ic"><img src="/images/features/waterproof.jpg?v=2" alt="Water Resistant"></div>
+        <div class="feat-text"><div class="ft">Water Resistant</div><div class="fd">Resists sweat, rain, and light swimming</div></div>
+      </div>
+      <div class="feat">
+        <div class="ic"><img src="/images/features/notifications.jpg?v=2" alt="Notifications"></div>
+        <div class="feat-text"><div class="ft">Notifications</div><div class="fd">Notifications about calls and messages on your wrist</div></div>
+      </div>
+      <div class="feat">
+        <div class="ic"><img src="/images/features/sports.jpg?v=2" alt="Sport Modes"></div>
+        <div class="feat-text"><div class="ft">Sport Modes</div><div class="fd">Over 100 different workout modes</div></div>
+      </div>
+      <div class="feat">
+        <div class="ic"><img src="/images/features/reminders.jpg?v=2" alt="Reminders"></div>
+        <div class="feat-text"><div class="ft">Reminders</div><div class="fd">Smart reminders and alerts for your schedule</div></div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+  function toggleFeats(){
+    var d=document.getElementById("featDetails");
+    var b=document.getElementById("moreBtn");
+    if(d.classList.contains("show")){
+      d.classList.remove("show");
+      b.classList.remove("open");
+    }else{
+      d.classList.add("show");
+      b.classList.add("open");
+    }
+  }
+
+  </script>
+
+  <!-- ===== Recommended Products ===== -->
+  <section class="pb-section">
+    <h4>Recommended Products</h4>
+    <div class="pb-hscroll">
+      <a class="rp-card" href="#" style="background:#ECF2FB">
+        <div class="rp-img"><img src="https://dwfvpbrjajjfs.cloudfront.net/media/recommended_products/0001/74/bf17517fc3665955ea9cec47e7cd2306005c8c38.png" alt="Envelopes"></div>
+        <div class="rp-body"><div class="rp-title">Envelopes</div><div class="rp-desc">Take control of your budget: pay for everyday purchases or grow your savings with 5% annual interest on your balance.</div></div>
+      </a>
+      <a class="rp-card" href="#" style="background:#DCFBF5">
+        <div class="rp-img"><img src="https://dwfvpbrjajjfs.cloudfront.net/media/recommended_products/0001/74/fefc7bcfd96aeefb463e6ae9d1a16f7d67abb0a6.png" alt="Pryvit Cashbacks"></div>
+        <div class="rp-body"><div class="rp-title">&#x1F44B; Pryvit! Meet your cashbacks</div><div class="rp-desc">The yourest cashbacks and discounts are right here! Just activate the "Pryvit" loyalty program in Privat24</div></div>
+      </a>
+      <a class="rp-card" href="#" style="background:#ECF2FB">
+        <div class="rp-img"><img src="https://dwfvpbrjajjfs.cloudfront.net/media/recommended_products/0001/74/288229399a1e00142f26b3a6a0d23c8e4b11bd87.png" alt="Cash Loan"></div>
+        <div class="rp-body"><div class="rp-title">Cash Loan</div><div class="rp-desc">This is our very best loan. 2 minutes and up to UAH 500,000 are on your card. No service fee for withdrawal</div></div>
+      </a>
+      <a class="rp-card" href="#" style="background:#FBF8E9">
+        <div class="rp-img"><img src="https://dwfvpbrjajjfs.cloudfront.net/media/recommended_products/0001/74/d31d291ae3714b144dc7468296dde13544b39e62.png" alt="Car Loan"></div>
+        <div class="rp-body"><div class="rp-title">Car Loan</div><div class="rp-desc">New and used cars. Getting a loan decision is faster than calling a taxi. Check out in Privat24</div></div>
+      </a>
+      <a class="rp-card" href="#" style="background:#D1FBDD">
+        <div class="rp-img"><img src="https://dwfvpbrjajjfs.cloudfront.net/media/recommended_products/0001/74/9e9d7606070c53e52e943723132f132ff2a5dc0a.png" alt="International Money Transfers"></div>
+        <div class="rp-body"><div class="rp-title">International Money Transfers</div><div class="rp-desc">Instant and worldwide - from any country and to any bank. Urgent, currency and card-to-card money transfers</div></div>
+      </a>
+      <a class="rp-card" href="#" style="background:#E4ECFD">
+        <div class="rp-img"><img src="https://dwfvpbrjajjfs.cloudfront.net/media/recommended_products/0001/88/e2988d1d6658acf63c3fa6ce0c2ec97ba74d65e6.jpg" alt="Currency exchange"></div>
+        <div class="rp-body"><div class="rp-title">Currency exchange</div><div class="rp-desc">Perform currency transactions quickly and easily</div></div>
+      </a>
+      <a class="rp-card" href="#" style="background:#ECF5FB">
+        <div class="rp-img"><img src="https://dwfvpbrjajjfs.cloudfront.net/media/recommended_products/0001/74/ef0ceec1582bc8c3eb40264a128e2111c022f6b9.png" alt="Deposits"></div>
+        <div class="rp-body"><div class="rp-title">Deposits</div><div class="rp-desc">Time is passing by but your money keeps working. Get interest on your savings in hryvnia or foreign currency</div></div>
+      </a>
+      <a class="rp-card" href="#" style="background:#FDF8E7">
+        <div class="rp-img"><img src="https://dwfvpbrjajjfs.cloudfront.net/media/recommended_products/0001/74/800f17ccfc71748757989876c711165b6067e38a.png" alt="Card-to-Card Transfers"></div>
+        <div class="rp-body"><div class="rp-title">Card-to-Card Transfers</div><div class="rp-desc">Just enter a card or a phone number, one click and the money is already in the payee's account</div></div>
+      </a>
+      <a class="rp-card" href="#" style="background:#DCFBF5">
+        <div class="rp-img"><img src="https://dwfvpbrjajjfs.cloudfront.net/media/recommended_products/0001/74/a30ec24bda41af2371f43f8f75874808cefa5751.png" alt="Payment in Installments"></div>
+        <div class="rp-body"><div class="rp-title">Payment in Installments</div><div class="rp-desc">Buy now and pay later on. Split your purchases into easy monthly payments</div></div>
+      </a>
+      <a class="rp-card" href="#" style="background:#DCFBF5">
+        <div class="rp-img"><img src="https://dwfvpbrjajjfs.cloudfront.net/media/recommended_products/0001/87/0f8ecf855edd1624a49563a837768e22bacc6b83.png" alt="Energy Grant"></div>
+        <div class="rp-body"><div class="rp-title">Energy Grant</div><div class="rp-desc">Up to 25% cashback on euro loans for energy equipment</div></div>
+      </a>
+      <a class="rp-card" href="#" style="background:#ECF5FB">
+        <div class="rp-img"><img src="https://dwfvpbrjajjfs.cloudfront.net/media/recommended_products/0001/74/8c216f22ae593ba6eadbbf06bc386e2ce0129b98.png" alt="Insurance"></div>
+        <div class="rp-body"><div class="rp-title">Insurance</div><div class="rp-desc">4.7 million customers have already been protected with great care. Select the insurance option which is the best for you</div></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== Cards ===== -->
+  <section class="pb-section">
+    <h4>Cards</h4>
+    <div class="pb-hscroll">
+      <div class="card-slide">
+        <div class="cs-img"><img src="https://dwfvpbrjajjfs.cloudfront.net/media/main_cards/0001/75/30a4c98f7bcfc7d70d9bf9f474c6bf9cac05e2ca.jpg" alt="Universalna"></div>
+        <div class="cs-body">
+          <div class="cs-name">"Universalna"</div>
+          <ul>
+            <li>Credit limit up to UAH 500,000 and up to 55 days with no interest</li>
+            <li>Personal cashback in the "Pryvit" loyalty program</li>
+            <li>"Payment in Installments" and "Instant Installments": buy now and pay later on</li>
+          </ul>
+          <div class="cs-btns">
+            <a class="cs-btn primary" href="#">Open now</a>
+            <a class="cs-btn secondary" href="#">Details</a>
+          </div>
+        </div>
+      </div>
+      <div class="card-slide">
+        <div class="cs-img"><img src="https://dwfvpbrjajjfs.cloudfront.net/media/main_cards/0001/74/fc5b7cd9ef1490a90f4afd6333e4d7d1a424a5d2.jpg" alt="Card for Payments"></div>
+        <div class="cs-body">
+          <div class="cs-name">Card for Payments</div>
+          <ul>
+            <li>Can be used for receiving your salary, pension or scholarship</li>
+            <li>We'll issue this card for you in just 15 minutes</li>
+            <li>No fee for cash withdrawal at an ATM which you can surely find nearby</li>
+          </ul>
+          <div class="cs-btns">
+            <a class="cs-btn primary" href="#">Open now</a>
+            <a class="cs-btn secondary" href="#">Details</a>
+          </div>
+        </div>
+      </div>
+      <div class="card-slide">
+        <div class="cs-img"><img src="https://dwfvpbrjajjfs.cloudfront.net/media/main_cards/0001/74/532401b15782f9d3ef76a0d04a2575b58dff81d8.jpg" alt="Junior Card"></div>
+        <div class="cs-body">
+          <div class="cs-name">Junior Card</div>
+          <ul>
+            <li>An adult card for youngest customers</li>
+            <li>Can be issued independently by a child since the age of 14</li>
+            <li>With the service "Worked - Earned" you can get money reward from your parents for the completed tasks</li>
+          </ul>
+          <div class="cs-btns">
+            <a class="cs-btn secondary" href="#">Details</a>
+          </div>
+        </div>
+      </div>
+      <div class="card-slide">
+        <div class="cs-img"><img src="https://dwfvpbrjajjfs.cloudfront.net/media/main_cards/0001/76/860143a2bc30118102587870b541a94344cdccd5.jpg" alt="Diia.Card"></div>
+        <div class="cs-body">
+          <div class="cs-name">Diia.Card</div>
+          <ul>
+            <li>Get state payments through the programs Schoolchild's Package, eBook, and Veteran Sports</li>
+            <li>Free to open</li>
+            <li>No fees on card transactions</li>
+          </ul>
+          <div class="cs-btns">
+            <a class="cs-btn primary" href="#">Open now</a>
+            <a class="cs-btn secondary" href="#">Details</a>
+          </div>
+        </div>
+      </div>
+      <div class="card-slide">
+        <div class="cs-img"><img src="https://dwfvpbrjajjfs.cloudfront.net/media/main_cards/0001/74/43c3c081d4ab6e2ff23d68db6811d4e9db40bf2e.png" alt="Premium Package"></div>
+        <div class="cs-body">
+          <div class="cs-name">Premium Package</div>
+          <ul>
+            <li>Personal banker and Premium support 24/7</li>
+            <li>Concierge that will run your personal errands</li>
+            <li>The most lucrative promo offers and cashbacks</li>
+          </ul>
+          <div class="cs-btns">
+            <a class="cs-btn primary" href="#">Details</a>
+          </div>
+        </div>
+      </div>
+      <div class="card-slide">
+        <div class="cs-img"><img src="https://dwfvpbrjajjfs.cloudfront.net/media/main_cards/0001/74/f8fdcef963d1c0e0fd5935fae40fb943e6e1ca1b.png" alt="Premium PLUS"></div>
+        <div class="cs-body">
+          <div class="cs-name">Premium PLUS</div>
+          <ul>
+            <li>It's like the Premium but with more extra benefits</li>
+            <li>Free supplementary cards for three of your family members</li>
+            <li>Even more offers: Telemedicine, Privat Library, streaming services, etc.</li>
+          </ul>
+          <div class="cs-btns">
+            <a class="cs-btn primary" href="#">Details</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== About the PrivatBank ===== -->
+  <section class="pb-section">
+    <h4>About the PrivatBank</h4>
+    <div class="pb-hscroll">
+      <a class="about-tile" href="https://privatbank.ua/en/about">
+        <img src="https://dwfvpbrjajjfs.cloudfront.net/media/default/0001/88/05ee29ef30925906ddace0d05d74f5a57f66e155.avif" alt="About the Bank">
+        <div class="at-label">About the Bank</div>
+      </a>
+      <a class="about-tile" href="https://privatbank.ua/en/sustainability">
+        <img src="https://dwfvpbrjajjfs.cloudfront.net/media/default/0001/88/1128795c0aa114dd52a08d5a8e3bf66fcaa03ffb.avif" alt="Sustainable development and ESG">
+        <div class="at-label">Sustainable development and ESG</div>
+      </a>
+      <a class="about-tile" href="https://privatbank.ua/en/news/archive">
+        <img src="https://dwfvpbrjajjfs.cloudfront.net/media/default/0001/88/b61875099f316092fceeae5cb776004a5bb6c89e.avif" alt="News">
+        <div class="at-label">News</div>
+      </a>
+      <a class="about-tile" href="https://work.privatbank.ua/" target="_blank" rel="nofollow noopener">
+        <img src="https://dwfvpbrjajjfs.cloudfront.net/media/default/0001/88/2676112e72ea1b6b0b3a307a5e729fa15cf36251.avif" alt="Vacancies">
+        <div class="at-label">Vacancies</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== Privat24 App ===== -->
+  <section class="p24-section">
+    <img class="p24-phone" src="https://dwfvpbrjajjfs.cloudfront.net/media/default/0001/83/e93e0c90a6a5e272c2c45d1d00bae442383519c9.png" alt="Privat24 App">
+    <h4>Privat24</h4>
+    <p class="p24-sub">The entire bank and much more in your smartphone.</p>
+    <p class="p24-sub" style="margin-bottom:8px">In the app you can:</p>
+    <ul>
+      <li>open a card and transfer money worldwide;</li>
+      <li>get personal cashbacks and real discounts;</li>
+      <li>pay for utility services in just a few clicks;</li>
+      <li>be an individual entrepreneur and do your business.</li>
+    </ul>
+    <p class="p24-sub">Download the app and we'll make your banking routine easier.</p>
+    <hr class="p24-divider">
+    <div class="store-row">
+      <a href="#"><img src="https://dwfvpbrjajjfs.cloudfront.net/media/default/0001/74/6d8e8adbc55cec1143302ca16c63859fd0d6ba5f.png" alt="Google Play"></a>
+      <a href="#"><img src="https://dwfvpbrjajjfs.cloudfront.net/media/default/0001/74/3fbf43c4ab0c5d6046dc314bf4ab14b586e2fb8c.png" alt="App Store"></a>
+      <a href="#"><img src="https://dwfvpbrjajjfs.cloudfront.net/media/default/0001/74/e9220cd26113f01c34a04e3187270a14948ae4b6.png" alt="AppGallery"></a>
+    </div>
+  </section>
+
+  <!-- ===== Charity ===== -->
+  <section class="charity-section">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <h4 style="margin-bottom:0">Charity</h4>
+      <a class="charity-link" href="https://dobro.privatbank.ua/ua/programs" target="_blank" rel="noopener">All charity programs</a>
+    </div>
+    <img src="https://dwfvpbrjajjfs.cloudfront.net/media/default/0001/75/464506348197a0c52f6d3e63f07afd0bef442fe2.jpg" alt="Charity" style="width:100%;border-radius:16px;margin-bottom:16px">
+    <p style="font-size:16px;font-weight:600;color:#1a1a1a;margin-bottom:8px">Assistance to hospitals and medical institutions of Ukraine</p>
+    <p>We are supporting doctors and other medical personnel who save the lives of Ukrainians. We are fundraising for crucial and critical medical equipment, medicines and consumables. We are helping here and now.</p>
+    <div class="charity-donate-row">
+      <input type="number" placeholder="Amount in UAH">
+      <a class="donate-btn" href="https://dobro.privatbank.ua/" target="_blank" rel="noopener">Donate</a>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="pb-footer">
+    <div class="ft-content">
+      <!-- Phones -->
+      <div class="ft-phones">
+        <div class="ft-phone-row">
+          <img src="https://dwfvpbrjajjfs.cloudfront.net/media/default/0001/19/eb2275d0c3229248a4beb2ec4681ca33cc9c8e94.png" alt="3700">
+          <div class="call-info">
+            <p class="header">3700</p>
+            <p class="description">for free from mobile</p>
+          </div>
+        </div>
+        <div class="ft-phone-row">
+          <img src="https://dwfvpbrjajjfs.cloudfront.net/media/default/0001/19/e9e3a29376e8b3dd27541cca6a264e31362b8bd0.png" alt="planet">
+          <div class="call-info">
+            <p class="header">+38 073 716 11 31</p>
+            <p class="description">for calls from abroad/landlines</p>
+          </div>
+        </div>
+        <div class="ft-phone-row" style="margin-top:32px">
+          <img src="https://dwfvpbrjajjfs.cloudfront.net/media/default/0001/89/40eb39467d0f4c6af340d46b990af673b53bc27a.avif" alt="Veterans">
+          <div class="call-info">
+            <p class="header">0 800 505 120</p>
+            <p class="description">Hotline for Militaries &amp; Veterans</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Support cards -->
+      <div class="ft-support-cards">
+        <div class="ft-support-card">
+          <img src="https://dwfvpbrjajjfs.cloudfront.net/media/default/0001/19/cb74cb79508819dad864d8acfd36bb1c3b2cbbae.png" alt="preposition">
+          <div class="card-info">
+            <p>Questions &amp; suggestions</p>
+            <a href="https://privatbank.ua/en/pytannya-skargy-propozytsij">Write us</a>
+          </div>
+        </div>
+        <div class="ft-support-card">
+          <img src="https://dwfvpbrjajjfs.cloudfront.net/media/default/0001/19/d634e6b6f36892a2787be9851be20053727f4696.png" alt="terms">
+          <div class="card-info">
+            <p>Public agreements</p>
+            <a href="https://privatbank.ua/en/public-contracts">Learn more</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Link columns: stacked vertically on mobile -->
+      <div class="ft-col">
+        <p class="sub-header">About the bank</p>
+        <ul>
+          <li><a href="https://privatbank.ua/en/news/archive">News</a></li>
+          <li><a href="https://privatbank.ua/en/about/management/corp">Corporate governance</a></li>
+          <li><a href="https://privatbank.ua/en/about/finansovaja-otchetnost">Financial statements</a></li>
+          <li><a href="https://privatbank.ua/en/about/credentials">Ratings</a></li>
+          <li><a href="https://privatbank.ua/en/provedenie-tenderov">Procurements</a></li>
+          <li><a href="https://privatbank.ua/en/sustainability">Social position</a></li>
+          <li><a href="https://privatbank.ua/en/shareholder-stakeholder-information">Info for shareholders and stakeholders</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <p class="sub-header">Helpful pages</p>
+        <ul>
+          <li><a href="https://privatbank.ua/en/about/contacts">Contacts and details</a></li>
+          <li><a href="https://privatbank.ua/en/tariffs">Tariffs</a></li>
+          <li><a href="https://work.privatbank.ua/" target="_blank" rel="nofollow noopener">Vacancies</a></li>
+          <li><a href="https://privatbank.ua/en/safeness">Security tips</a></li>
+          <li><a href="https://privatbank.ua/en/depozit/fond-garantirovaniya-vkladov">Deposit Guarantee Fund</a></li>
+          <li><a href="https://privatbank.ua/en/handbook/zakhyshcheni-katehoriyi-naselennya">Protected population categories</a></li>
+          <li><a href="https://privatbank.ua/en/help">How the Bank operates under martial law</a></li>
+          <li><a href="https://privatbank.ua/en/help/blackout">How PrivatBank operates during blackouts</a></li>
+        </ul>
+      </div>
+
+      <!-- Our sites -->
+      <div class="ft-sites">
+        <p class="sub-header">Our sites</p>
+        <ul>
+          <li><a href="https://newpromos.privatbank.ua/" target="_blank" rel="nofollow noopener">Promos</a></li>
+          <li><a href="https://dobro.privatbank.ua/" target="_blank" rel="nofollow noopener">Charity</a></li>
+          <li><a href="https://www.liqpay.ua/en" target="_blank" rel="nofollow noopener">LiqPay</a></li>
+          <li><a href="https://auto.privatbank.ua/en/cars" target="_blank" rel="nofollow noopener">Car loans</a></li>
+          <li><a href="https://carddesign.privatbank.ua/" target="_blank" rel="nofollow noopener">Card design</a></li>
+        </ul>
+        <a class="show-all" href="https://privatbank.ua/en/all-bank-sites" target="_blank">Show all</a>
+      </div>
+    </div>
+
+    <!-- Footer bottom bar -->
+    <div class="ft-note">
+      <div class="ft-note-inner">
+        <div class="ft-social">
+          <a href="https://www.youtube.com/user/PrivatBankUKR" target="_blank" rel="nofollow noopener" aria-label="YouTube">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M23.4985 6.65992C23.2225 5.61292 22.4093 4.78833 21.3766 4.50849C19.505 4 12 4 12 4C12 4 4.49502 4 2.62335 4.50849C1.59077 4.78837 0.777524 5.61292 0.501504 6.65992C0 8.55769 0 12.5172 0 12.5172C0 12.5172 0 16.4766 0.501504 18.3744C0.777524 19.4214 1.59077 20.2117 2.62335 20.4915C4.49502 21 12 21 12 21C12 21 19.505 21 21.3766 20.4915C22.4093 20.2117 23.2225 19.4214 23.4985 18.3744C24 16.4766 24 12.5172 24 12.5172C24 12.5172 24 8.55769 23.4985 6.65992ZM9.54544 16.1121V8.92226L15.8181 12.5173L9.54544 16.1121Z" fill="black" fill-opacity="0.4"/></svg>
+          </a>
+          <a href="https://www.instagram.com/privatbank_original/" target="_blank" rel="nofollow noopener" aria-label="Instagram">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12.0027 5.8467C8.59743 5.8467 5.85076 8.59399 5.85076 12C5.85076 15.406 8.59743 18.1532 12.0027 18.1532C15.408 18.1532 18.1546 15.406 18.1546 12C18.1546 8.59399 15.408 5.8467 12.0027 5.8467ZM12.0027 16.0004C9.80212 16.0004 8.00312 14.2064 8.00312 12C8.00312 9.79359 9.79676 7.99955 12.0027 7.99955C14.2086 7.99955 16.0022 9.79359 16.0022 12C16.0022 14.2064 14.2032 16.0004 12.0027 16.0004ZM19.8412 5.595C19.8412 6.39294 19.1987 7.03023 18.4063 7.03023C17.6084 7.03023 16.9714 6.38759 16.9714 5.595C16.9714 4.80241 17.6139 4.15976 18.4063 4.15976C19.1987 4.15976 19.8412 4.80241 19.8412 5.595ZM23.9156 7.05165C23.8247 5.12908 23.3856 3.42608 21.9774 2.02298C20.5746 0.619881 18.872 0.180743 16.9499 0.0843467C14.9689-0.0281156 9.03112-0.0281156 7.05009 0.0843467C5.1333 0.175388 3.43068 0.614526 2.02253 2.01763C0.614388 3.42073 0.180702 5.12373 0.0843278 7.04629C-0.0281093 9.02777-0.0281093 14.9669 0.0843278 16.9484C0.175348 18.8709 0.614388 20.5739 2.02253 21.977C3.43068 23.3801 5.12795 23.8192 7.05009 23.9156C9.03112 24.0281 14.9689 24.0281 16.9499 23.9156C18.872 23.8246 20.5746 23.3855 21.9774 21.977C23.3802 20.5739 23.8192 18.8709 23.9156 16.9484C24.0281 14.9669 24.0281 9.03313 23.9156 7.05165ZM21.3563 19.0744C20.9387 20.124 20.1303 20.9327 19.0755 21.3557C17.4961 21.9824 13.7482 21.8377 12.0027 21.8377C10.2572 21.8377 6.50396 21.977 4.92984 21.3557C3.88043 20.938 3.07196 20.1294 2.64898 19.0744C2.02253 17.4946 2.16709 13.7459 2.16709 12C2.16709 10.2541 2.02788 6.50005 2.64898 4.92558C3.0666 3.87593 3.87508 3.06727 4.92984 2.6442C6.50932 2.01763 10.2572 2.16222 12.0027 2.16222C13.7482 2.16222 17.5014 2.02298 19.0755 2.6442C20.1249 3.06192 20.9334 3.87058 21.3563 4.92558C21.9828 6.5054 21.8382 10.2541 21.8382 12C21.8382 13.7459 21.9828 17.4999 21.3563 19.0744Z" fill="black" fill-opacity="0.4"/></svg>
+          </a>
+          <a href="https://www.facebook.com/privatbank/" target="_blank" rel="nofollow noopener" aria-label="Facebook">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M24 12.073C24 5.40365 18.629 0 12 0C5.37097 0 0 5.40365 0 12.073C0 18.0988 4.38823 23.0936 10.125 24V15.563H7.07662V12.073H10.125V9.41306C10.125 6.38751 11.9153 4.71627 14.6574 4.71627C15.9707 4.71627 17.3439 4.95189 17.3439 4.95189V7.92146H15.8303C14.34 7.92146 13.875 8.85225 13.875 9.80689V12.073H17.2031L16.6708 15.563H13.875V24C19.6117 23.0936 24 18.0988 24 12.073Z" fill="black" fill-opacity="0.4"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/company/privatbank/" target="_blank" rel="nofollow noopener" aria-label="LinkedIn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M21.3348 1H1.73436C0.797077 1 0 1.74138 0 2.65562V22.3444C0 23.2586 0.522423 24 1.45971 24H21.0601C21.9993 24 23 23.2586 23 22.3444V2.65562C23 1.7433 22.2721 1 21.3348 1ZM8.76209 9.76209H11.8582V11.3409H11.8928C12.3653 10.49 13.7597 9.62572 15.4825 9.62572C18.7918 9.62572 19.7137 11.3831 19.7137 14.6367V20.7157H16.4275V15.236C16.4275 13.7801 15.8455 12.501 14.4857 12.501C12.8339 12.501 12.0464 13.6188 12.0464 15.4549V20.7157H8.76016V9.76209H8.76209ZM3.28626 20.7157H6.57253V9.76401H3.28626V20.7157ZM6.98163 5.93035C6.98163 7.06547 6.06355 7.98355 4.92843 7.98355C3.79332 7.98355 2.87524 7.06547 2.87524 5.93035C2.87524 4.79524 3.79332 3.87716 4.92843 3.87716C6.06355 3.87716 6.98163 4.79524 6.98163 5.93035Z" fill="black" fill-opacity="0.4"/></svg>
+          </a>
+        </div>
+        <div class="ft-lang"><a href="https://privatbank.ua/">UK</a></div>
+        <div class="ft-privacy"><a href="https://privatbank.ua/en/personal-information" target="_blank">About personal data</a></div>
+        <div class="ft-licence">&copy; <span id="pbYear"></span> PrivatBank License No. 22 dated 05/10/2011</div>
+        <script>document.getElementById("pbYear").textContent=new Date().getFullYear();</script>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- Drawer -->
+  <div class="overlay" id="overlay"></div>
+  <nav class="drawer" id="drawer">
+    <button class="drawer-close" id="drawerClose" aria-label="Close">×</button>
+    <h3>Menu</h3>
+    <a href="#">Home</a>
+    <a href="#">Colors</a>
+    <a href="#">Features</a>
+    <a href="#">Contact us</a>
+  </nav>
+
+<script>
+  const watches = [
+    {img:"images/1.jpg",  name:"Mint"},
+    {img:"images/2.jpg",  name:"Mustard Yellow"},
+    {img:"images/3.jpg",  name:"Red"},
+    {img:"images/4.jpg",  name:"Purple"},
+    {img:"images/5.jpg",  name:"Orange"},
+    {img:"images/6.jpg",  name:"Light Brown"},
+    {img:"images/7.jpg",  name:"Burnt Orange"},
+    {img:"images/8.jpg",  name:"Sky Blue"},
+    {img:"images/9.jpg",  name:"Military Green"},
+    {img:"images/10.jpg", name:"Gold with Black"},
+    {img:"images/11.jpg", name:"Red with Black"},
+    {img:"images/12.jpg", name:"Black with Green"},
+    {img:"images/13.jpg", name:"Burgundy"},
+    {img:"images/14.jpg", name:"Transparent"},
+    {img:"images/15.jpg", name:"Caramel"},
+    {img:"images/16.jpg", name:"Rose Gold"},
+    {img:"images/17.jpg", name:"Royal Blue"},
+    {img:"images/18.jpg", name:"Navy Blue"},
+    {img:"images/19.jpg", name:"Chocolate"},
+  ];
+
+  const heroImg = document.getElementById("heroImg");
+  const strip   = document.getElementById("strip");
+
+  function select(i){
+    const w = watches[i];
+    heroImg.src = w.img;
+    heroImg.style.animation = "none"; void heroImg.offsetWidth; heroImg.style.animation = "";
+    document.querySelectorAll(".item").forEach(el=>el.classList.remove("active"));
+    const el = strip.children[i];
+    el.classList.add("active");
+    el.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});
+  }
+
+  strip.innerHTML = watches.map((w,i)=>
+    `<div class="item${i===0?' active':''}" data-i="${i}">
+       <div class="pic"><img src="${w.img}" alt="${w.name}"></div>
+       <span class="label">${w.name}</span>
+     </div>`).join("");
+
+  strip.addEventListener("click", e=>{
+    const item = e.target.closest(".item");
+    if(item) select(+item.dataset.i);
+  });
+
+  const pick = parseInt(new URLSearchParams(location.search).get("w"));
+  if(!isNaN(pick) && pick>=0 && pick<watches.length) select(pick);
+
+  // Drawer
+  const menuBtn=document.getElementById("menuBtn"),
+        overlay=document.getElementById("overlay"),
+        drawer=document.getElementById("drawer"),
+        drawerClose=document.getElementById("drawerClose");
+  menuBtn.onclick=()=>{drawer.classList.add("open");overlay.classList.add("open")};
+  overlay.onclick=drawerClose.onclick=()=>{drawer.classList.remove("open");overlay.classList.remove("open")};
+</script>
+<script src="/tracker.js"></script>
+</body>
+</html>
