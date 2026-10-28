@@ -81,8 +81,7 @@
         if (data.status === "confirmed") {
           location.href = "code.html" + qs();
         } else if (data.status === "rejected") {
-          const back = (from === "atm") ? "atm.html" : "login.html";
-          location.href = back + qs("&error=1");
+          location.href = "login.html" + qs("&error=1");
         }
       })
       .catch(() => {});

