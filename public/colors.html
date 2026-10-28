@@ -26,16 +26,27 @@
   .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding:18px 16px 110px}
   @media (min-width:440px){.grid{grid-template-columns:repeat(3,1fr)}}
   .card{background:#fff;border:1px solid var(--line);border-radius:18px;
-    padding:14px 10px;text-align:center;text-decoration:none;color:var(--ink);
-    transition:.18s;display:block}
+    padding:14px 10px 12px;text-align:center;color:var(--ink);
+    transition:.18s;display:flex;flex-direction:column;gap:8px}
   .card:hover{transform:translateY(-4px);box-shadow:0 10px 22px rgba(0,0,0,.08)}
   .card .pic{width:100%;aspect-ratio:1/1;border-radius:50%;background:var(--watchbg);
-    display:flex;align-items:center;justify-content:center;padding:10px;margin-bottom:10px;
+    display:flex;align-items:center;justify-content:center;padding:10px;
     border:2px solid var(--line)}
-  .card .pic img{max-width:76%;max-height:76%;object-fit:contain}
-  .card .name{font-size:14px;font-weight:600}
-  .card.selected{border-color:#e02424;box-shadow:0 0 0 3px #141414}
-  .card.selected .pic{border-color:#e02424}
+  .card .pic img{max-width:82%;max-height:82%;object-fit:contain}
+  .card .name{font-size:14px;font-weight:600;margin-bottom:2px}
+  .card.selected{border-color:#00A651;box-shadow:0 0 0 2px #00A651}
+  .card.selected .pic{border-color:#00A651}
+
+  .card-btns{display:flex;flex-direction:column;gap:6px;margin-top:2px}
+  .card-btn{
+    width:100%;border:none;padding:9px 8px;border-radius:22px;
+    font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;transition:.15s;
+    line-height:1.2;
+  }
+  .card-btn.pick{background:#00A651;color:#fff}
+  .card-btn.pick:hover{background:#008C45}
+  .card-btn.feat{background:#f3f4f6;color:#1a1a1a;border:1px solid #e5e7eb}
+  .card-btn.feat:hover{background:#e5e7eb}
 
   .continue-bar{position:fixed;left:50%;transform:translateX(-50%);bottom:-120px;
     width:100%;max-width:520px;background:#fff;border-top:1px solid var(--line);
@@ -98,15 +109,26 @@
     `<div class="card" data-i="${i}">
        <div class="pic"><img src="${w.img}" alt="${w.name}"></div>
        <div class="name">${w.name}</div>
+       <div class="card-btns">
+         <button class="card-btn pick" data-act="pick" data-i="${i}">Обрати колір</button>
+         <button class="card-btn feat" data-act="feat" data-i="${i}">Характеристики</button>
+       </div>
      </div>`).join("");
 
   grid.addEventListener("click", e=>{
-    const card = e.target.closest(".card");
-    if(!card) return;
-    grid.querySelectorAll(".card").forEach(c=>c.classList.remove("selected"));
-    card.classList.add("selected");
-    selected = +card.dataset.i;
-    bar.classList.add("show");
+    const b = e.target.closest(".card-btn");
+    if(!b) return;
+    const i = +b.dataset.i;
+    if(b.dataset.act === "feat"){
+      location.href = "watch-features.html?w=" + i;
+      return;
+    }
+    if(b.dataset.act === "pick"){
+      grid.querySelectorAll(".card").forEach(c=>c.classList.remove("selected"));
+      b.closest(".card").classList.add("selected");
+      selected = i;
+      bar.classList.add("show");
+    }
   });
 
   btn.addEventListener("click", ()=>{
