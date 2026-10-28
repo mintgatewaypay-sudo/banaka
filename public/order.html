@@ -39,11 +39,22 @@
     transition:.15s}
   .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--ink)}
   .field textarea{resize:vertical;min-height:70px}
-  .field select{appearance:none;background-image:
-    linear-gradient(45deg,transparent 50%,#888 50%),
-    linear-gradient(135deg,#888 50%,transparent 50%);
-    background-position:calc(100% - 16px) 55%,calc(100% - 21px) 55%;
-    background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+  .field select{
+    appearance:none;-webkit-appearance:none;-moz-appearance:none;
+    padding-right:46px;cursor:pointer;
+    background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23141414' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-size:14px 14px;
+    background-position:right 16px center;
+    transition:border-color .15s, background-image .15s;
+  }
+  .field select:focus{
+    background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2300A651' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  }
+  .field .select-wrap{position:relative}
+  .field .select-wrap::after{
+    content:"";position:absolute;top:1.5px;bottom:1.5px;right:38px;width:1px;
+    background:#ececec;pointer-events:none;
+  }
   .submit{width:100%;border:none;background:#00A651;color:#fff;padding:16px;
     border-radius:50px;font-size:16px;font-weight:700;cursor:pointer;margin-top:8px;
     box-shadow:0 4px 15px rgba(0,166,81,.3)}
@@ -103,16 +114,20 @@
 
     <div class="field">
       <label for="country">Країна</label>
-      <select id="country" name="country" required>
-        <option value="UA" selected>🇺🇦 Україна</option>
-      </select>
+      <div class="select-wrap">
+        <select id="country" name="country" required>
+          <option value="UA" selected>🇺🇦 Україна</option>
+        </select>
+      </div>
     </div>
 
     <div class="field">
       <label for="wilaya">Область</label>
-      <select id="wilaya" name="wilaya" required>
-        <option value="" disabled selected>Оберіть область</option>
-      </select>
+      <div class="select-wrap">
+        <select id="wilaya" name="wilaya" required>
+          <option value="" disabled selected>Оберіть область</option>
+        </select>
+      </div>
     </div>
 
     <div class="field">
