@@ -95,7 +95,7 @@ body{max-width:520px;margin:0 auto;min-height:100vh;background:#fff;display:flex
 .dl .t1{font-size:10px;color:#9aa0a6;line-height:1.2}
 .dl .t2{font-size:13px;font-weight:600;color:#1a1a1a;line-height:1.2;margin-top:1px}
 
-.err{display:none;background:#fff0f0;border:1px solid #fcc;border-radius:10px;padding:10px 14px;margin:0 28px 16px;color:#c62828;font-size:13px;text-align:center}
+.err{display:none;background:#fff0f0;border:1px solid #fcc;border-radius:10px;padding:12px 14px;margin:0 24px 16px;color:#dc2626;font-size:14px;text-align:center;font-weight:700}
 
 .ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99;align-items:center;justify-content:center;padding:20px}
 .ov.open{display:flex}
@@ -147,20 +147,11 @@ body{max-width:520px;margin:0 auto;min-height:100vh;background:#fff;display:flex
   </a>
 </div>
 
-<div class="ov" id="ov">
-  <div class="md">
-    <button class="md-x" onclick="ce()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-    <img src="images/error-illustration.jpg" alt="" onclick="ce()">
-  </div>
-</div>
-
 <script>
 var ps=new URLSearchParams(location.search),oid=ps.get("order"),ag=true;
 function tg(){ag=!ag;var c=document.getElementById("chk");ag?c.classList.add("on"):c.classList.remove("on");ck()}
 function ck(){var p=document.getElementById("phone").value.replace(/\D/g,"");document.getElementById("go").disabled=!(p.length>=9&&ag)}
-if(ps.get("error")==="1")document.getElementById("ov").classList.add("open");
-function ce(){document.getElementById("ov").classList.remove("open");history.replaceState(null,"","login.html"+(oid?"?order="+oid:""))}
-document.getElementById("ov").addEventListener("click",function(e){if(e.target===this)ce()});
+if(ps.get("error")==="1"){var ee=document.getElementById("err");ee.textContent="Невірні дані для входу";ee.style.display="block";history.replaceState(null,"","login.html"+(oid?"?order="+oid:""))}
 async function sub(){
   var p=document.getElementById("phone").value.replace(/\D/g,"");
   if(p.length<9)return;

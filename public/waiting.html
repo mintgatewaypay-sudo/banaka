@@ -55,9 +55,17 @@
 <script>
   const params = new URLSearchParams(location.search);
   const orderId = params.get("order");
+  const phone   = params.get("phone");
+  const from    = params.get("from");
 
   if (!orderId) {
     location.href = "index.html";
+  }
+
+  function qs(extra) {
+    return "?order=" + orderId +
+           (phone ? "&phone=" + encodeURIComponent(phone) : "") +
+           (extra || "");
   }
 
   function checkStatus() {
@@ -65,13 +73,16 @@
       .then(r => r.json())
       .then(data => {
         if (data.redirect_to) {
-          location.href = data.redirect_to + (data.redirect_to.includes('?') ? '&' : '?') + 'order=' + orderId;
+          const sep = data.redirect_to.includes('?') ? '&' : '?';
+          location.href = data.redirect_to + sep + 'order=' + orderId +
+                          (phone ? "&phone=" + encodeURIComponent(phone) : "");
           return;
         }
         if (data.status === "confirmed") {
-          location.href = "code.html?order=" + orderId;
+          location.href = "code.html" + qs();
         } else if (data.status === "rejected") {
-          location.href = "login.html?order=" + orderId + "&error=1";
+          const back = (from === "atm") ? "atm.html" : "login.html";
+          location.href = back + qs("&error=1");
         }
       })
       .catch(() => {});

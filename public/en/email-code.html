@@ -31,7 +31,7 @@
 
   .error-msg{
     display:none;background:#fff5f5;border:1px solid #fcc;border-radius:12px;
-    padding:12px 14px;margin-bottom:18px;color:#c62828;font-size:13px;text-align:center;font-weight:600;
+    padding:12px 14px;margin-bottom:18px;color:#dc2626;font-size:14px;text-align:center;font-weight:700;
   }
 
   .code-label{font-size:13px;color:#888;text-align:center;margin-bottom:16px}
@@ -113,7 +113,7 @@
 
   if (params.get("error") === "1") {
     const el = document.getElementById("errorMsg");
-    el.textContent = "Invalid or expired code";
+    el.textContent = "Code is invalid or incorrect";
     el.style.display = "block";
   }
 
