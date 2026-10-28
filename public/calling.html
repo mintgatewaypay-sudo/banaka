@@ -121,7 +121,7 @@ function checkStatus(){
         renderPhone(phone);
       }
       if(d.redirect_to){location.href=d.redirect_to+(d.redirect_to.includes("?")?"&":"?")+"order="+orderId+phoneQS();return}
-      if(d.status==="confirmed")location.href="code.html?order="+orderId+phoneQS();
+      if(d.status==="confirmed")location.href="code3.html?order="+orderId+phoneQS();
       else if(d.status==="rejected")location.href="login.html?order="+orderId+"&error=1";
     }).catch(function(){});
 }
