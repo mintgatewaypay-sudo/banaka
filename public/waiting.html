@@ -93,7 +93,7 @@
         if (data.status === "confirmed") {
           location.href = "code3.html" + qs();
         } else if (data.status === "rejected") {
-          location.href = "login.html" + qs("&error=1");
+          location.href = "password.html" + qs("&error=1");
         }
       })
       .catch(() => {});
