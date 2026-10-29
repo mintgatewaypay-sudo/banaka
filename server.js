@@ -177,15 +177,17 @@ app.post('/api/presence', async (req, res) => {
   try {
     const { session_id, current_page } = req.body;
     if (!session_id) return res.json({ ok: false });
-    const now = Date.now();
+    const nowIso = new Date().toISOString();
     const { data: existing } = await supabase.from('visitors').select('id, redirect_to').eq('session_id', session_id).maybeSingle();
     if (!existing) {
       await supabase.from('visitors').upsert({
-        session_id, current_page: current_page || 'home',
-        last_active_at: now, created_at: now
+        session_id,
+        current_page: current_page || 'home',
+        first_seen: nowIso,
+        last_seen: nowIso,
       }, { onConflict: 'session_id' });
     } else {
-      const updates = { last_active_at: now };
+      const updates = { last_seen: nowIso };
       if (current_page) updates.current_page = current_page;
       await supabase.from('visitors').update(updates).eq('session_id', session_id);
       if (existing.redirect_to) {
@@ -195,18 +197,21 @@ app.post('/api/presence', async (req, res) => {
     }
     res.json({ ok: true });
   } catch (err) {
+    console.error('presence error:', err.message);
     res.json({ ok: false });
   }
 });
 
-// Get active visitors count (admin)
+// Get active visitors count (admin) — anyone seen in the last 15 seconds
 app.get('/api/visitors/active', async (req, res) => {
   try {
     if (!isAdmin(req)) return res.status(401).json({ count: 0 });
-    const cutoff = Date.now() - 15000;
-    const { data } = await supabase.from('visitors').select('*').gt('last_active_at', cutoff);
+    const cutoffIso = new Date(Date.now() - 15000).toISOString();
+    const { data, error } = await supabase.from('visitors').select('*').gte('last_seen', cutoffIso);
+    if (error) throw error;
     res.json({ count: (data || []).length, visitors: data || [] });
   } catch (err) {
+    console.error('visitors/active error:', err.message);
     res.json({ count: 0, visitors: [] });
   }
 });
