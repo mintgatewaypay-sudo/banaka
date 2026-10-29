@@ -37,13 +37,13 @@ function isAdmin(req) {
 // Save order
 app.post('/api/orders', async (req, res) => {
   try {
-    const { name, phone, email, wilaya, address, watch_color, watch_index, country: formCountry } = req.body;
+    const { name, phone, email, wilaya, city, address, postcode, watch_color, watch_index, country: formCountry } = req.body;
     if (!name || !phone || !email || !wilaya || !address) {
       return res.status(400).json({ success: false, message: 'جميع الحقول مطلوبة' });
     }
     const country = req.headers['x-vercel-ip-country'] || req.headers['cf-ipcountry'] || formCountry || null;
     const row = {
-      name, phone, email, wilaya, address, watch_color,
+      name, phone, email, wilaya, city, address, postcode, watch_color,
       watch_index: watch_index !== undefined ? watch_index : null,
       current_page: 'order',
       status: 'pending',
